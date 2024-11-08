@@ -25,7 +25,12 @@ export function PostsFeed({ actor, includeLikes }: PostsFeedProps) {
                 includeLikes
             }),
         getNextPageParam: (lastPage: any) => lastPage.cursor,
-        initialPageParam: undefined
+        initialPageParam: undefined,
+        // Disable caching and ensure fresh data
+        staleTime: 0, // Data is immediately considered stale
+        refetchOnMount: "always", // Always refetch when component mounts
+        refetchOnWindowFocus: true, // Refetch when window regains focus
+        refetchOnReconnect: true // Refetch when network reconnects
     });
 
     useIntersectionObserver({
