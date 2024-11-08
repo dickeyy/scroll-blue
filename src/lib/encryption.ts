@@ -1,8 +1,7 @@
 // app/lib/encryption.ts
 import { AES, enc } from "crypto-js";
 
-// In a real application, you should use an environment variable for the secret key
-const ENCRYPTION_KEY = process.env.NEXT_PUBLIC_ENCRYPTION_KEY || "your-fallback-encryption-key";
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || "your-fallback-encryption-key";
 
 export function encryptData<T>(data: T): T {
     try {
