@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { followAccount, unfollowAccount } from "@/services/profile";
 import { useUserStore } from "@/stores/user-store";
 import { formatNumber } from "@/utils/number-format";
@@ -8,7 +9,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Button } from "../ui/button";
 
 interface ProfileHeaderProps {
     profile: AppBskyActorDefs.ProfileViewDetailed;

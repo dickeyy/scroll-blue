@@ -1,9 +1,9 @@
 "use client";
 
+import { PostsFeed } from "@/components/post/post-feed";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import { PostsFeed } from "../post-feed";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 interface ProfileTabsProps {
     handle: string;

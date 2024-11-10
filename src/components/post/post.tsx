@@ -2,16 +2,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import PostButtons from "@/components/post/post-buttons";
+import PostSkeleton from "@/components/post/post-skeleton";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/stores/auth-store";
-import { formatNumber } from "@/utils/number-format";
 import { renderRichText } from "@/utils/parse-text";
 import { getPostAge } from "@/utils/time";
-import { Ellipsis, Heart, MessageSquare, Repeat } from "lucide-react";
+import { Ellipsis } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
-import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
-import { Skeleton } from "./ui/skeleton";
+import { useEffect, useState } from "react";
 
 interface PostProps {
     post: any;
@@ -101,21 +100,21 @@ export default function Post({ post, showReply = true }: PostProps) {
                                 )}
                             </CardContent>
                             <CardFooter className="p-3 grid grid-cols-4 gap-6 w-full">
-                                <PostButton
+                                <PostButtons
                                     type="like"
                                     count={post.reply.parent.likeCount || 0}
                                     active={!!post.reply.parent.viewer?.like}
                                     postUri={post.reply.parent.uri}
                                     postCid={post.reply.parent.cid}
                                 />
-                                <PostButton
+                                <PostButtons
                                     type="repost"
                                     count={post.reply.parent.repostCount || 0}
                                     active={!!post.reply.parent.viewer?.repost}
                                     postUri={post.reply.parent.uri}
                                     postCid={post.reply.parent.cid}
                                 />
-                                <PostButton
+                                <PostButtons
                                     type="reply"
                                     count={post.reply.parent.replyCount || 0}
                                     postUri={post.reply.parent.uri}
@@ -224,21 +223,21 @@ export default function Post({ post, showReply = true }: PostProps) {
                 </CardContent>
 
                 <CardFooter className="p-3 grid grid-cols-4 gap-6 w-full">
-                    <PostButton
+                    <PostButtons
                         type="like"
                         count={post.likeCount || 0}
                         active={!!post.viewer?.like}
                         postUri={post.uri}
                         postCid={post.cid}
                     />
-                    <PostButton
+                    <PostButtons
                         type="repost"
                         count={post.repostCount || 0}
                         active={!!post.viewer?.repost}
                         postUri={post.uri}
                         postCid={post.cid}
                     />
-                    <PostButton
+                    <PostButtons
                         type="reply"
                         count={post.replyCount || 0}
                         postUri={post.uri}
@@ -250,107 +249,5 @@ export default function Post({ post, showReply = true }: PostProps) {
                 </CardFooter>
             </Card>
         </Link>
-    );
-}
-
-interface PostButtonProps {
-    type: "like" | "repost" | "reply";
-    count: number;
-    active?: boolean;
-    postUri: string;
-    postCid: string;
-}
-
-function PostButton({ type, count, active, postUri, postCid }: PostButtonProps) {
-    const countString = formatNumber(count);
-    const agent = useAuthStore((state: any) => state.agent);
-
-    const handleClick = useCallback(async () => {
-        if (!agent) return;
-
-        try {
-            switch (type) {
-                case "like":
-                    if (active) {
-                        await agent.deleteLike(postUri);
-                    } else {
-                        await agent.like(postUri, postCid);
-                    }
-                    break;
-                case "repost":
-                    if (active) {
-                        await agent.deleteRepost(postUri);
-                    } else {
-                        await agent.repost(postUri, postCid);
-                    }
-                    break;
-                case "reply":
-                    // Handle reply in parent component
-                    break;
-            }
-        } catch (error) {
-            console.error(`Failed to ${type} post:`, error);
-        }
-    }, [agent, type, active, postUri, postCid]);
-
-    return (
-        <button
-            onClick={handleClick}
-            className={cn(
-                "flex items-center gap-2 p-2 rounded-md hover:bg-muted transition-colors",
-                active && type === "like" && "text-red-500",
-                active && type === "repost" && "text-green-500",
-                !active && "text-muted-foreground"
-            )}
-        >
-            {type === "like" && <Heart className="h-4 w-4" />}
-            {type === "repost" && <Repeat className="h-4 w-4" />}
-            {type === "reply" && <MessageSquare className="h-4 w-4" />}
-            <p className="text-xs">{countString}</p>
-        </button>
-    );
-}
-
-export function PostSkeleton() {
-    return (
-        <Card className="bg-foreground/[2%] space-y-0 gap-0">
-            <CardHeader className="p-3 space-y-0 my-0 flex flex-row justify-between">
-                <div className="flex items-center gap-4">
-                    <Skeleton className="h-8 w-8 rounded-full" />
-                    <div className="flex flex-row gap-2 items-center justify-center">
-                        <Skeleton className="h-4 w-16" />
-                        <Skeleton className="h-4 w-24" />
-                    </div>
-                </div>
-                <div className="flex gap-2 items-center">
-                    <div className="text-xs text-muted-foreground">
-                        <Skeleton className="h-4 w-14" />
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                        <Skeleton className="h-4 w-14" />
-                    </div>
-                </div>
-            </CardHeader>
-            <CardContent className="pt-0 px-3 pb-3">
-                <Skeleton className="h-20 w-full" />
-            </CardContent>
-            <CardFooter className="p-3 grid grid-cols-4 gap-6 w-full">
-                <div className="flex items-center gap-2 p-2">
-                    <Skeleton className="h-4 w-4" />
-                    <Skeleton className="h-4 w-8" />
-                </div>
-                <div className="flex items-center gap-2 p-2">
-                    <Skeleton className="h-4 w-4" />
-                    <Skeleton className="h-4 w-8" />
-                </div>
-                <div className="flex items-center gap-2 p-2">
-                    <Skeleton className="h-4 w-4" />
-                    <Skeleton className="h-4 w-8" />
-                </div>
-                <div className="flex items-center gap-2 p-2">
-                    <Skeleton className="h-4 w-4" />
-                </div>
-            </CardFooter>
-        </Card>
     );
 }

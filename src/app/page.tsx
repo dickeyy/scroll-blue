@@ -1,4 +1,4 @@
-import { PostsFeed } from "@/components/post-feed";
+import { PostsFeed } from "@/components/post/post-feed";
 
 export default function FeedPage() {
     return (

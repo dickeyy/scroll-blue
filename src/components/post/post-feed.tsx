@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import ErrorCard from "@/components/error-card";
+import Post from "@/components/post/post";
+import PostSkeleton from "@/components/post/post-skeleton";
+import { Spinner } from "@/components/spinner";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 import { getPosts } from "@/services/post";
 import { AppBskyFeedDefs } from "@atproto/api";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRef } from "react";
-import ErrorCard from "./error-card";
-import Post, { PostSkeleton } from "./post";
 
 interface PostsFeedProps {
     actor?: string;
@@ -100,7 +102,9 @@ export function PostsFeed({ actor, includeLikes, includeReplies }: PostsFeedProp
                         <PostSkeleton />
                     </div>
                 ) : hasNextPage ? (
-                    <div className="text-sm text-muted-foreground">Loading more...</div>
+                    <div className="text-sm text-muted-foreground">
+                        <Spinner size={16} />
+                    </div>
                 ) : (
                     <div className="text-sm text-muted-foreground">No more posts</div>
                 )}

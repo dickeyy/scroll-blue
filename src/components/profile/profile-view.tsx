@@ -1,11 +1,11 @@
 "use client";
 
+import ErrorCard from "@/components/error-card";
+import ProfileHeader from "@/components/profile/profile-header";
+import ProfileSkeleton from "@/components/profile/profile-skeleton";
+import ProfileTabs from "@/components/profile/profile-tabs";
 import { getProfile } from "@/services/profile";
 import { useQuery } from "@tanstack/react-query";
-import ErrorCard from "../error-card";
-import ProfileHeader from "./profile-header";
-import ProfileSkeleton from "./profile-skeleton";
-import ProfileTabs from "./profile-tabs";
 
 interface ProfileViewProps {
     handle: string;
