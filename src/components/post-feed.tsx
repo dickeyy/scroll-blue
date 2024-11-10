@@ -47,7 +47,6 @@ export function PostsFeed({ actor, includeLikes, includeReplies }: PostsFeedProp
         return (
             <div className="flex flex-col gap-4">
                 <PostSkeleton />
-                <PostSkeleton />
             </div>
         );
     }
