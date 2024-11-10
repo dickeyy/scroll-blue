@@ -4,45 +4,48 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/stores/auth-store";
 import { useUserStore } from "@/stores/user-store";
 import { Bell, Home, Mail, PenSquare, Search, Settings, User } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export function LeftSidebar() {
     const pathname = usePathname();
     const profile = useUserStore((state: any) => state.profile);
+    const { signout } = useAuthStore();
 
     const navigationItems = [
         {
             label: "Home",
             icon: Home,
-            href: "/app"
+            href: "/"
         },
         {
             label: "Search",
             icon: Search,
-            href: "/app/search"
+            href: "/search"
         },
         {
             label: "Notifications",
             icon: Bell,
-            href: "/app/notifications"
+            href: "/notifications"
         },
         {
             label: "Messages",
             icon: Mail,
-            href: "/app/messages"
+            href: "/messages"
         },
         {
             label: "Profile",
             icon: User,
-            href: `/app/${profile?.handle}`
+            href: `/${profile?.handle}`
         },
         {
             label: "Settings",
             icon: Settings,
-            href: "/app/settings"
+            href: "/settings"
         }
     ];
 
@@ -50,9 +53,7 @@ export function LeftSidebar() {
         <div className="flex h-full flex-col justify-between">
             <div className="flex flex-col items-center gap-2 md:items-stretch">
                 {/* Logo */}
-                <div className="mb-4 flex h-12 w-12 items-center justify-center">
-                    <img src="/logo.png" alt="Logo" className="h-8 w-8" />
-                </div>
+                <Logo />
 
                 {/* Navigation Items */}
                 <nav className="flex flex-col gap-1">
@@ -115,5 +116,19 @@ export function LeftSidebar() {
                 )}
             </div>
         </div>
+    );
+}
+
+function Logo() {
+    return (
+        <Link className="mb-4 flex h-12 w-12 items-center justify-center" href="/">
+            <Image
+                src="/logo.png"
+                alt="Logo"
+                className="transition-transform duration-500 hover:rotate-180"
+                width={40}
+                height={40}
+            />
+        </Link>
     );
 }

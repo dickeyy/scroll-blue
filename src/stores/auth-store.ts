@@ -2,6 +2,7 @@
 import { decryptData, encryptData } from "@/lib/encryption";
 import type { AtpSessionData } from "@atproto/api";
 import { AtpAgent as BskyAgent } from "@atproto/api";
+import { toast } from "sonner";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { useUserStore } from "./user-store";
@@ -14,8 +15,8 @@ interface AuthState {
     agent: BskyAgent | null;
     error: string | null;
     // Actions
-    login: (identifier: string, password: string) => Promise<void>;
-    logout: () => void;
+    signin: (identifier: string, password: string) => Promise<void>;
+    signout: () => void;
     resumeSession: () => Promise<boolean>;
 }
 
@@ -29,7 +30,7 @@ export const useAuthStore = create<AuthState>()(
             agent: null,
             error: null,
 
-            login: async (identifier: string, password: string) => {
+            signin: async (identifier: string, password: string) => {
                 try {
                     const agent = new BskyAgent({ service: DEFAULT_SERVICE });
                     const { success } = await agent.login({ identifier, password });
@@ -60,7 +61,7 @@ export const useAuthStore = create<AuthState>()(
                 }
             },
 
-            logout: async () => {
+            signout: async () => {
                 const { agent } = get();
                 try {
                     // Create a new agent instance without session
@@ -82,6 +83,8 @@ export const useAuthStore = create<AuthState>()(
                         agent: newAgent,
                         error: null
                     });
+
+                    toast.success("You have been signed out.");
                 } catch (error) {
                     console.error("Logout error:", error);
                     // Still clear the local state even if server logout fails
@@ -115,6 +118,9 @@ export const useAuthStore = create<AuthState>()(
                         agent,
                         error: null
                     });
+
+                    toast.success("Welcome back" + (" , " + agent.session?.handle) || "!");
+
                     return true;
                 } catch (error) {
                     set({

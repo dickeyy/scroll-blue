@@ -41,7 +41,7 @@ export default function Post({ post, showReply = true }: PostProps) {
                         <CardHeader className="p-3 space-y-0">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                    <Link href={`/profile/${post.reply.parent.author.handle}`}>
+                                    <Link href={`/${post.reply.parent.author.handle}`}>
                                         <img
                                             src={post.reply.parent.author.avatar}
                                             alt={`${post.reply.parent.author.handle}'s avatar`}
@@ -50,16 +50,12 @@ export default function Post({ post, showReply = true }: PostProps) {
                                     </Link>
                                     <div className="flex flex-col gap-0">
                                         <div className="flex items-center gap-2">
-                                            <Link
-                                                href={`/profile/${post.reply.parent.author.handle}`}
-                                            >
+                                            <Link href={`/${post.reply.parent.author.handle}`}>
                                                 <p className="text-sm font-semibold hover:underline">
                                                     {post.reply.parent.author.displayName}
                                                 </p>
                                             </Link>
-                                            <Link
-                                                href={`/profile/${post.reply.parent.author.handle}`}
-                                            >
+                                            <Link href={`/${post.reply.parent.author.handle}`}>
                                                 <p className="text-sm text-muted-foreground hover:underline">
                                                     @{post.reply.parent.author.handle}
                                                 </p>
@@ -133,7 +129,7 @@ export default function Post({ post, showReply = true }: PostProps) {
             <CardHeader className="p-3 space-y-0">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Link href={`/profile/${post.author.handle}`}>
+                        <Link href={`/${post.author.handle}`}>
                             <img
                                 src={post.author.avatar}
                                 alt={`${post.author.handle}'s avatar`}
@@ -142,12 +138,12 @@ export default function Post({ post, showReply = true }: PostProps) {
                         </Link>
                         <div className="flex flex-col gap-0">
                             <div className="flex items-center gap-2">
-                                <Link href={`/profile/${post.author.handle}`}>
+                                <Link href={`/${post.author.handle}`}>
                                     <p className="text-sm font-semibold hover:underline">
                                         {post.author.displayName}
                                     </p>
                                 </Link>
-                                <Link href={`/profile/${post.author.handle}`}>
+                                <Link href={`/${post.author.handle}`}>
                                     <p className="text-sm text-muted-foreground hover:underline">
                                         @{post.author.handle}
                                     </p>
@@ -192,7 +188,7 @@ export default function Post({ post, showReply = true }: PostProps) {
                     <div className="border rounded-lg p-3 mt-2">
                         <div className="flex items-center gap-2">
                             {post.embed.record.author ? (
-                                <Link href={`/profile/${post.embed.record.author.handle}`}>
+                                <Link href={`/${post.embed.record.author.handle}`}>
                                     <div className="flex items-center gap-2">
                                         {post.embed.record.author.avatar && (
                                             <img

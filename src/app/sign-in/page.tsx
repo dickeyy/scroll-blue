@@ -1,5 +1,6 @@
 "use client";
 
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -21,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/stores/auth-store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -35,14 +37,14 @@ const formSchema = z.object({
 
 export default function SignInPage() {
     const router = useRouter();
-    const { login, isAuthenticated } = useAuthStore();
+    const { signin, isAuthenticated } = useAuthStore();
 
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         // Redirect if already authenticated
         if (isAuthenticated) {
-            router.push("/app");
+            router.push("/");
         }
     }, [isAuthenticated, router]);
 
@@ -58,10 +60,12 @@ export default function SignInPage() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsLoading(true);
         try {
-            await login(values.handle, values.password);
-            router.push("/app");
+            await signin(values.handle, values.password);
+            toast.success("Welcome back!");
+            router.push("/");
         } catch (error) {
             toast.error(error instanceof Error ? error.message : "Authentication failed");
+            form.setFocus("password");
         } finally {
             setIsLoading(false);
         }
@@ -74,7 +78,11 @@ export default function SignInPage() {
                 <CardHeader>
                     <CardTitle className="font-serif font-bold text-4xl">Sign In</CardTitle>
                     <CardDescription className="text-muted-foreground">
-                        Sign in using your Bluesky credentials.
+                        Sign in using your{" "}
+                        <span className="underline hover:text-foreground transition-colors">
+                            <Link href="https://bsky.social">Bluesky</Link>
+                        </span>{" "}
+                        credentials.
                     </CardDescription>
                 </CardHeader>
 
@@ -87,7 +95,7 @@ export default function SignInPage() {
                                     name="handle"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Email or Handle</FormLabel>
+                                            <FormLabel>Identifier (Email or Handle)</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="kyle.so" {...field} />
                                             </FormControl>
@@ -123,7 +131,7 @@ export default function SignInPage() {
                                 />
                             </div>
                             <Button className="w-full" type="submit" disabled={isLoading}>
-                                Sign In
+                                {isLoading ? <Spinner className="mr-2" size={16} /> : "Sign In"}
                             </Button>
                         </form>
                     </Form>

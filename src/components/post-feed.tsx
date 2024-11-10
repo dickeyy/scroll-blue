@@ -11,18 +11,20 @@ import Post, { PostSkeleton } from "./post";
 interface PostsFeedProps {
     actor?: string;
     includeLikes?: boolean;
+    includeReplies?: boolean;
 }
 
-export function PostsFeed({ actor, includeLikes }: PostsFeedProps) {
+export function PostsFeed({ actor, includeLikes, includeReplies }: PostsFeedProps) {
     const loadMoreRef = useRef<HTMLDivElement>(null);
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useInfiniteQuery({
-        queryKey: ["posts", actor, includeLikes],
+        queryKey: ["posts", actor, includeLikes, includeReplies],
         queryFn: ({ pageParam }: any) =>
             getPosts({
                 cursor: pageParam,
                 actor,
-                includeLikes
+                includeLikes,
+                includeReplies
             }),
         getNextPageParam: (lastPage: any) => lastPage.cursor,
         initialPageParam: undefined,
@@ -44,20 +46,31 @@ export function PostsFeed({ actor, includeLikes }: PostsFeedProps) {
             <div className="flex flex-col gap-4">
                 <PostSkeleton />
                 <PostSkeleton />
-                <PostSkeleton />
             </div>
         );
     }
 
     if (status === "error") {
-        return <div className="flex justify-center p-4 text-destructive">Error loading posts</div>;
+        return (
+            <div className="flex justify-center p-4 text-destructive">
+                Error loading posts. Please try again later.
+            </div>
+        );
     }
 
+    // Add content key based on the feed type to force re-render when switching tabs
+    const feedType = includeReplies ? "replies" : includeLikes ? "likes" : "posts";
+
     return (
-        <div className="flex flex-col gap-4">
+        <div key={`${actor}-${feedType}`} className="flex flex-col gap-4">
             {data.pages.map((page: any) => (
                 <div key={page.cursor} className="flex flex-col gap-4">
                     {page.posts.map((feedViewPost: AppBskyFeedDefs.FeedViewPost) => {
+                        // Skip posts without reply if we're in replies mode and it's not a reply
+                        if (includeReplies && !feedViewPost.reply) {
+                            return null;
+                        }
+
                         // Merge the post data with any reply/parent data at the feed view level
                         const enrichedPost = {
                             ...feedViewPost.post,

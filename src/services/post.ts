@@ -11,24 +11,32 @@ interface GetPostsOptions {
     actor?: string;
     // For liked posts
     includeLikes?: boolean;
+    // For including replies
+    includeReplies?: boolean;
 }
 
 export async function getPosts({
     cursor,
     limit = 20,
     actor,
-    includeLikes = false
+    includeLikes = false,
+    includeReplies = false
 }: GetPostsOptions = {}) {
     const agent = useAuthStore.getState().agent;
     if (!agent?.session) throw new Error("Not authenticated");
 
     try {
+        if (includeLikes && actor) {
+            return getLikedPosts(actor, { cursor, limit });
+        }
+
         if (actor) {
-            // Get user timeline
+            // Get user timeline with optional replies
             const response = await agent.getAuthorFeed({
                 actor,
                 cursor,
-                limit
+                limit,
+                filter: includeReplies ? "posts_with_replies" : "posts_no_replies"
             });
 
             return {
