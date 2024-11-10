@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ["https://cdn.bsky.app/"]
+        domains: ["cdn.bsky.app"]
     },
     eslint: {
         ignoreDuringBuilds: true

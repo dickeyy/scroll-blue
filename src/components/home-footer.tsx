@@ -1,7 +1,7 @@
 "use client";
 
-import GitHubIcon from "@/public/icons/github.svg";
 import Link from "next/link";
+import GitHubIcon from "../../public/icons/github.svg";
 
 export default function HomeFooter() {
     return (
