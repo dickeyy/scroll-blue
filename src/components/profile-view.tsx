@@ -83,7 +83,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
     return (
         <div className="flex h-full flex-col">
             <div className="relative">
-                {profile.banner && (
+                {profile.banner ? (
                     <Image
                         src={profile.banner}
                         alt="Profile banner"
@@ -91,6 +91,8 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                         width={800}
                         height={200}
                     />
+                ) : (
+                    <div className="h-48 w-full bg-foreground/[2%] rounded-lg" />
                 )}
                 <div className="absolute bottom-0 translate-y-1/2 left-4">
                     <Image
