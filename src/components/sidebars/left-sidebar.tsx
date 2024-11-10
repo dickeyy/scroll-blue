@@ -4,7 +4,6 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/stores/auth-store";
 import { useUserStore } from "@/stores/user-store";
 import { Bell, Home, Mail, PenSquare, Search, Settings, User } from "lucide-react";
 import Image from "next/image";
@@ -14,7 +13,6 @@ import { usePathname } from "next/navigation";
 export function LeftSidebar() {
     const pathname = usePathname();
     const profile = useUserStore((state: any) => state.profile);
-    const { signout } = useAuthStore();
 
     const navigationItems = [
         {
@@ -123,7 +121,7 @@ function Logo() {
     return (
         <Link className="mb-4 flex h-12 w-12 items-center justify-center" href="/">
             <Image
-                src="/logo.png"
+                src="/logo.svg"
                 alt="Logo"
                 className="transition-transform duration-500 hover:rotate-180"
                 width={40}

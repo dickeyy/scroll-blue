@@ -11,10 +11,10 @@ const comingSoon = true;
 export default function Homepage() {
     return (
         <div className="flex h-screen flex-col items-center justify-between">
-            <div className="flex w-full max-w-[30rem] flex-col items-center justify-center flex-1 px-4 text-center">
+            <div className="flex w-full max-w-[30rem] flex-col items-center justify-center flex-1 px-4 text-center gap-4">
                 {comingSoon && (
                     <motion.div
-                        className="mt-8 flex w-full flex-col items-center justify-center gap-4 sm:flex-row"
+                        className="mt-8 flex w-full flex-col items-center justify-center gap-4 sm:flex-row mb-1"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, ease: "easeInOut", delay: 0.75 }}

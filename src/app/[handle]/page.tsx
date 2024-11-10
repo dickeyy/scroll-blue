@@ -1,22 +1,18 @@
 // app/[handle]/page.tsx
 import { ProfileView } from "@/components/profile-view";
-import { Metadata } from "next";
 
 interface ProfilePageProps {
     params: { handle: string };
-    searchParams: { tab?: string };
+    searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export async function generateMetadata({ params }: ProfilePageProps): Promise<Metadata> {
-    return {
-        title: `@${params.handle} • bsky`
-    };
-}
+export default async function ProfilePage({ params, searchParams }: ProfilePageProps) {
+    const handle = await Promise.resolve(params.handle);
+    const tab = await Promise.resolve(searchParams.tab);
 
-export default function ProfilePage({ params, searchParams }: ProfilePageProps) {
     return (
         <div className="flex h-full w-full flex-col p-4">
-            <ProfileView handle={params.handle} initialTab={searchParams.tab} />
+            <ProfileView handle={handle} initialTab={typeof tab === "string" ? tab : undefined} />
         </div>
     );
 }
