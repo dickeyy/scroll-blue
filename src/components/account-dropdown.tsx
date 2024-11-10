@@ -39,7 +39,7 @@ export default function AccountDropdown({ profile }: AccountDropdownProps) {
                                 className="h-9 w-9"
                             />
                         </Avatar>
-                        <div className="flex flex-col">
+                        <div className="flex-col md:flex hidden">
                             <p className="text-start text-sm font-semibold">
                                 {profile.displayName}
                             </p>
