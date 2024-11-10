@@ -40,7 +40,11 @@ export function ProfileView({ handle, initialTab }: ProfileViewProps) {
             <ErrorCard
                 error={{
                     message: error.message || "Error loading profile. Please try again later.",
-                    code: 500
+                    code: error.message.includes("Not Found")
+                        ? 404
+                        : error.message.includes("actor must be a valid did or a handle")
+                          ? 400
+                          : 500
                 }}
             />
         );
