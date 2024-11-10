@@ -1,13 +1,13 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Search · scroll.blue"
+    title: "Messages · scroll.blue"
 };
 
-export default function SearchPage() {
+export default function MessagesPage() {
     return (
         <div>
-            <p>search</p>
+            <p>messages</p>
         </div>
     );
 }
