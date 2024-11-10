@@ -8,6 +8,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import ErrorCard from "./error-card";
 import { PostSkeleton } from "./post";
 import { PostsFeed } from "./post-feed";
 import { Button } from "./ui/button";
@@ -20,7 +21,11 @@ interface ProfileViewProps {
 }
 
 export function ProfileView({ handle, initialTab }: ProfileViewProps) {
-    const { data: profile, status } = useQuery({
+    const {
+        data: profile,
+        status,
+        error
+    } = useQuery({
         queryKey: ["profile", handle],
         queryFn: () => getProfile(handle),
         staleTime: 1000 * 60 * 5 // Consider data stale after 5 minutes
@@ -32,9 +37,12 @@ export function ProfileView({ handle, initialTab }: ProfileViewProps) {
 
     if (status === "error") {
         return (
-            <div className="flex justify-center p-4 text-destructive">
-                Error loading profile. Please try again later.
-            </div>
+            <ErrorCard
+                error={{
+                    message: error.message || "Error loading profile. Please try again later.",
+                    code: 500
+                }}
+            />
         );
     }
 

@@ -6,7 +6,11 @@ import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/providers/auth-provider";
 import { QueryProvider } from "@/providers/query-provider";
 import "@/styles/globals.css";
-import { Inter as FontSans, Averia_Serif_Libre as FontSerif } from "next/font/google";
+import {
+    JetBrains_Mono as FontMono,
+    Inter as FontSans,
+    Averia_Serif_Libre as FontSerif
+} from "next/font/google";
 import { usePathname } from "next/navigation";
 
 const fontSans = FontSans({
@@ -18,6 +22,12 @@ const fontSerif = FontSerif({
     subsets: ["latin"],
     variable: "--font-serif",
     weight: ["300", "400", "700"]
+});
+
+const fontMono = FontMono({
+    subsets: ["latin"],
+    variable: "--font-mono",
+    weight: ["300", "400", "500", "600", "700"]
 });
 
 // Wrapper component for conditional sidebar rendering
@@ -73,7 +83,8 @@ export default function RootLayout({
                     className={cn(
                         "min-h-screen overflow-auto bg-background font-sans antialiased",
                         fontSans.variable,
-                        fontSerif.variable
+                        fontSerif.variable,
+                        fontMono.variable
                     )}
                 >
                     <AuthProvider>

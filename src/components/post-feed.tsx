@@ -6,6 +6,7 @@ import { getPosts } from "@/services/post";
 import { AppBskyFeedDefs } from "@atproto/api";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRef } from "react";
+import ErrorCard from "./error-card";
 import Post, { PostSkeleton } from "./post";
 
 interface PostsFeedProps {
@@ -17,23 +18,24 @@ interface PostsFeedProps {
 export function PostsFeed({ actor, includeLikes, includeReplies }: PostsFeedProps) {
     const loadMoreRef = useRef<HTMLDivElement>(null);
 
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useInfiniteQuery({
-        queryKey: ["posts", actor, includeLikes, includeReplies],
-        queryFn: ({ pageParam }: any) =>
-            getPosts({
-                cursor: pageParam,
-                actor,
-                includeLikes,
-                includeReplies
-            }),
-        getNextPageParam: (lastPage: any) => lastPage.cursor,
-        initialPageParam: undefined,
-        // Disable caching and ensure fresh data
-        staleTime: 0, // Data is immediately considered stale
-        refetchOnMount: "always", // Always refetch when component mounts
-        refetchOnWindowFocus: true, // Refetch when window regains focus
-        refetchOnReconnect: true // Refetch when network reconnects
-    });
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status, error } =
+        useInfiniteQuery({
+            queryKey: ["posts", actor, includeLikes, includeReplies],
+            queryFn: ({ pageParam }: any) =>
+                getPosts({
+                    cursor: pageParam,
+                    actor,
+                    includeLikes,
+                    includeReplies
+                }),
+            getNextPageParam: (lastPage: any) => lastPage.cursor,
+            initialPageParam: undefined,
+            // Disable caching and ensure fresh data
+            staleTime: 0, // Data is immediately considered stale
+            refetchOnMount: "always", // Always refetch when component mounts
+            refetchOnWindowFocus: true, // Refetch when window regains focus
+            refetchOnReconnect: true // Refetch when network reconnects
+        });
 
     useIntersectionObserver({
         target: loadMoreRef,
@@ -52,9 +54,12 @@ export function PostsFeed({ actor, includeLikes, includeReplies }: PostsFeedProp
 
     if (status === "error") {
         return (
-            <div className="flex justify-center p-4 text-destructive">
-                Error loading posts. Please try again later.
-            </div>
+            <ErrorCard
+                error={{
+                    message: error.message || "Error loading posts. Please try again later.",
+                    code: 500
+                }}
+            />
         );
     }
 
