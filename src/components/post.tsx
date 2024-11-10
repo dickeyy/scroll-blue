@@ -5,6 +5,7 @@
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth-store";
 import { formatNumber } from "@/utils/number-format";
+import { parseText } from "@/utils/parse-text";
 import { getPostAge } from "@/utils/time";
 import { Ellipsis, Heart, MessageSquare, Repeat } from "lucide-react";
 import Link from "next/link";
@@ -73,7 +74,7 @@ export default function Post({ post, showReply = true }: PostProps) {
                         </CardHeader>
                         <CardContent className="pt-0 px-3 pb-3">
                             <p className="text-start text-sm text-foreground whitespace-pre-wrap">
-                                {post.reply.parent.record.text}
+                                {parseText(post.reply.parent.record.text)}
                             </p>
                             {hasImages && (
                                 <div
@@ -160,7 +161,7 @@ export default function Post({ post, showReply = true }: PostProps) {
 
             <CardContent className="pt-0 px-3 pb-3 space-y-2">
                 <p className="text-start text-sm text-foreground whitespace-pre-wrap">
-                    {post.record.text}
+                    {parseText(post.record.text)}
                 </p>
 
                 {hasImages && (
@@ -213,7 +214,7 @@ export default function Post({ post, showReply = true }: PostProps) {
                         </div>
                         {post.embed.record.value?.text && (
                             <p className="mt-2 text-sm whitespace-pre-wrap">
-                                {post.embed.record.value.text}
+                                {parseText(post.embed.record.value.text)}
                             </p>
                         )}
                     </div>
