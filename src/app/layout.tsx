@@ -54,6 +54,13 @@ export default function RootLayout({
     return (
         <QueryProvider>
             <html lang="en" suppressHydrationWarning>
+                <head>
+                    <script
+                        defer
+                        data-domain="scroll.blue"
+                        src="https://analytics.kyle.so/js/script.js"
+                    ></script>
+                </head>
                 <body
                     className={cn(
                         "min-h-screen overflow-auto bg-background font-sans antialiased",
