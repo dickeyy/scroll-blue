@@ -2,11 +2,13 @@
 import { ProfileView } from "@/components/profile-view";
 
 interface ProfilePageProps {
-    params: { handle: string };
-    searchParams: { [key: string]: string | string[] | undefined };
+    params: Promise<{ handle: string }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function ProfilePage({ params, searchParams }: ProfilePageProps) {
+export default async function ProfilePage(props: ProfilePageProps) {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
     const handle = await Promise.resolve(params.handle);
     const tab = await Promise.resolve(searchParams.tab);
 
