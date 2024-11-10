@@ -66,7 +66,7 @@ export function PostsFeed({ actor, includeLikes, includeReplies }: PostsFeedProp
     const feedType = includeReplies ? "replies" : includeLikes ? "likes" : "posts";
 
     return (
-        <div key={`${actor}-${feedType}`} className="flex flex-col gap-4">
+        <div key={`${actor}-${feedType}-${data.pages.length}`} className="flex flex-col gap-4">
             {data.pages.map((page: any) => (
                 <div key={page.cursor} className="flex flex-col gap-4">
                     {page.posts.map((feedViewPost: AppBskyFeedDefs.FeedViewPost) => {
