@@ -1,5 +1,4 @@
-// app/[handle]/page.tsx
-import { ProfileView } from "@/components/profile-view";
+import { ProfileView } from "@/components/profile/profile-view";
 
 interface ProfilePageProps {
     params: Promise<{ handle: string }>;
