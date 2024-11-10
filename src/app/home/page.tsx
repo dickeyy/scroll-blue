@@ -34,7 +34,7 @@ export default function Homepage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, ease: "easeInOut", delay: 0.25 }}
                 >
-                    A minimal, open-source, self-hostable{" "}
+                    A minimal and open-source{" "}
                     <span className="hover:text-blue-500 transition-colors underline">
                         <a href="https://bsky.social" target="_blank">
                             Bluesky
