@@ -23,8 +23,6 @@ const fontSerif = FontSerif({
 // Wrapper component for conditional sidebar rendering
 function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-
-    // Routes that don't need the sidebar
     const noSidebarRoutes = ["/home", "/sign-in"];
     const shouldShowSidebar = !noSidebarRoutes.some((route) => pathname.startsWith(route));
 
@@ -34,14 +32,24 @@ function LayoutWrapper({ children }: { children: React.ReactNode }) {
 
     return (
         <div className="relative flex h-screen max-h-screen w-full flex-row overflow-hidden bg-background">
-            {/* Left Sidebar */}
-            <div className="z-20 flex h-full w-[68px] flex-col p-2 md:w-[240px] md:p-4">
+            {/* Fixed Left Sidebar */}
+            <div className="fixed left-0 top-0 z-20 h-full w-[68px] flex-shrink-0 p-2 md:w-[240px] md:p-4">
                 <LeftSidebar />
             </div>
-            {/* Main Content */}
-            <main className="relative flex h-full min-h-screen w-full flex-1 flex-col overflow-y-auto">
-                <div className="mx-auto h-full w-full max-w-3xl">{children}</div>
-            </main>
+
+            {/* Main Content Wrapper */}
+            <div className="flex w-full justify-center">
+                {/* Sidebar Spacer */}
+                <div className="w-[68px] flex-shrink-0 md:w-[240px]" />
+
+                {/* Main Content */}
+                <main className="no-scrollbar flex h-full min-h-screen w-full max-w-3xl flex-col overflow-y-auto">
+                    <div className="mx-auto h-full w-full">{children}</div>
+                </main>
+
+                {/* Right Spacer for Balance */}
+                <div className="w-[68px] flex-shrink-0 md:w-[240px] hidden md:block" />
+            </div>
         </div>
     );
 }
@@ -70,7 +78,7 @@ export default function RootLayout({
                 >
                     <AuthProvider>
                         <LayoutWrapper>{children}</LayoutWrapper>
-                        <Toaster richColors={true} position="top-center" />
+                        <Toaster richColors={true} position="top-right" />
                     </AuthProvider>
                 </body>
             </html>
