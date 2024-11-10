@@ -22,6 +22,23 @@ interface AuthState {
 
 const DEFAULT_SERVICE = "https://bsky.social";
 
+// Create a custom storage object that handles cross-tab synchronization
+const createSyncedStorage = () => {
+    const storage = createJSONStorage(() => localStorage);
+
+    // Listen for storage events from other tabs
+    if (typeof window !== "undefined") {
+        window.addEventListener("storage", (e) => {
+            if (e.key === "auth-storage") {
+                // Force zustand to rehydrate from localStorage
+                useAuthStore.persist.rehydrate();
+            }
+        });
+    }
+
+    return storage;
+};
+
 export const useAuthStore = create<AuthState>()(
     persist(
         (set, get) => ({
@@ -119,7 +136,9 @@ export const useAuthStore = create<AuthState>()(
                         error: null
                     });
 
-                    toast.success("Welcome back" + (" , " + agent.session?.handle) || "!");
+                    toast.success(
+                        "Welcome back" + (agent.session?.handle ? `, ${agent.session.handle}` : "!")
+                    );
 
                     return true;
                 } catch (error) {
@@ -135,7 +154,7 @@ export const useAuthStore = create<AuthState>()(
         }),
         {
             name: "auth-storage",
-            storage: createJSONStorage(() => sessionStorage), // Use sessionStorage instead of localStorage
+            storage: createSyncedStorage(), // Use our custom storage implementation
             partialize: (state) => ({
                 session: state.session // Only persist the encrypted session
             })
