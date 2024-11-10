@@ -1,6 +1,7 @@
 "use client";
 
 import { followAccount, getProfile, unfollowAccount } from "@/services/profile";
+import { useUserStore } from "@/stores/user-store";
 import { formatNumber } from "@/utils/number-format";
 import { AppBskyActorDefs } from "@atproto/api";
 import { Separator } from "@radix-ui/react-separator";
@@ -8,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import ErrorCard from "./error-card";
 import { PostSkeleton } from "./post";
 import { PostsFeed } from "./post-feed";
@@ -64,6 +66,7 @@ interface ProfileHeaderProps {
 
 export function ProfileHeader({ profile }: ProfileHeaderProps) {
     const queryClient = useQueryClient();
+    const currentUser = useUserStore((state) => state.profile);
     const [isHovering, setIsHovering] = useState(false);
 
     // Follow mutation
@@ -73,11 +76,25 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
         onSuccess: () => {
             // Invalidate and refetch profile data
             queryClient.invalidateQueries({ queryKey: ["profile", profile.handle] });
+        },
+        onError: (error) => {
+            console.error(error);
+            toast.error("Something went wrong.", {
+                description: error.message
+            });
         }
     });
 
     const handleFollowClick = () => {
-        followMutation.mutate(profile.viewer?.following !== undefined);
+        if (currentUser) {
+            if (currentUser.did !== profile.did) {
+                followMutation.mutate(profile.viewer?.following !== undefined);
+            } else {
+                toast.error("You cannot follow yourself.");
+            }
+        } else {
+            toast.error("You must be logged in to follow someone.");
+        }
     };
 
     return (
@@ -98,7 +115,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                     <Image
                         src={profile.avatar || "/default-avatar.png"}
                         alt="Profile picture"
-                        className="size-24 rounded-full border-4 border-background"
+                        className="size-24 rounded-full border-8 border-background"
                         width={96}
                         height={96}
                     />
@@ -119,26 +136,32 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                             @{profile.handle}
                         </a>
                     </div>
-                    {profile.did !== profile.viewer?.did && (
-                        <Button
-                            variant={
-                                profile.viewer?.following
-                                    ? isHovering
-                                        ? "destructive"
-                                        : "outline"
-                                    : "default"
-                            }
-                            onClick={handleFollowClick}
-                            disabled={followMutation.isPending}
-                            onMouseEnter={() => setIsHovering(true)}
-                            onMouseLeave={() => setIsHovering(false)}
-                        >
-                            {profile.viewer?.following
-                                ? isHovering
-                                    ? "Unfollow"
-                                    : "Following"
-                                : "Follow"}
-                        </Button>
+                    {currentUser && (
+                        <>
+                            {profile.did !== currentUser.did ? (
+                                <Button
+                                    variant={
+                                        profile.viewer?.following
+                                            ? isHovering
+                                                ? "destructive"
+                                                : "outline"
+                                            : "default"
+                                    }
+                                    onClick={handleFollowClick}
+                                    disabled={followMutation.isPending}
+                                    onMouseEnter={() => setIsHovering(true)}
+                                    onMouseLeave={() => setIsHovering(false)}
+                                >
+                                    {profile.viewer?.following
+                                        ? isHovering
+                                            ? "Unfollow"
+                                            : "Following"
+                                        : "Follow"}
+                                </Button>
+                            ) : (
+                                <Button variant="outline">Edit Profile</Button>
+                            )}
+                        </>
                     )}
                 </div>
 
