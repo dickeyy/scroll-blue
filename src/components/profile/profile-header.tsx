@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface ProfileHeaderProps {
     profile: AppBskyActorDefs.ProfileViewDetailed;
@@ -62,13 +63,15 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
                     <div className="h-48 w-full bg-foreground/[2%] rounded-lg" />
                 )}
                 <div className="absolute bottom-0 translate-y-1/2 left-4">
-                    <Image
-                        src={profile.avatar || "/default-avatar.png"}
-                        alt="Profile picture"
-                        className="size-24 rounded-full border-8 border-background"
-                        width={96}
-                        height={96}
-                    />
+                    <Avatar className="h-fit w-fit rounded-lg">
+                        <AvatarImage
+                            src={profile.avatar}
+                            className="h-[96px] w-[96px] rounded-full border-8 border-background"
+                        />
+                        <AvatarFallback className="h-[96px] w-[96px] rounded-full bg-muted border-8 border-background">
+                            {(profile.handle[0] + profile.handle[1]).toUpperCase() || "SB"}
+                        </AvatarFallback>
+                    </Avatar>
                 </div>
             </div>
 
