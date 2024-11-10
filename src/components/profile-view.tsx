@@ -111,7 +111,13 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                 <div className="flex items-start justify-between">
                     <div className="flex flex-col">
                         <h1 className="text-xl font-bold">{profile.displayName}</h1>
-                        <p className="text-muted-foreground">@{profile.handle}</p>
+                        <a
+                            href={`https://bsky.app/profile/${profile.handle}`}
+                            target="_blank"
+                            className="text-muted-foreground"
+                        >
+                            @{profile.handle}
+                        </a>
                     </div>
                     {profile.did !== profile.viewer?.did && (
                         <Button
