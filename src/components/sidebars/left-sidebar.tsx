@@ -121,7 +121,7 @@ function Logo() {
     return (
         <Link className="mb-4 flex h-12 w-12 items-center justify-center" href="/">
             <Image
-                src="/logo.png"
+                src="/logo.svg"
                 alt="Scroll blue logo"
                 className="transition-transform duration-500 hover:rotate-180"
                 width={40}
