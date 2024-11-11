@@ -4,11 +4,19 @@ import HomeFooter from "@/components/home-footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const comingSoon = true;
 
 export default function Homepage() {
+    const { data: session } = useSession();
+
+    if (session) {
+        redirect("/");
+    }
+
     return (
         <div className="flex h-screen flex-col items-center justify-between">
             <div className="flex w-full max-w-[30rem] flex-col items-center justify-center flex-1 px-4 text-center gap-4">

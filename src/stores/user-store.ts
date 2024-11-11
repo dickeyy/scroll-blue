@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // app/stores/user.ts
+import { getAtpSession } from "@/lib/api";
 import type { AppBskyActorDefs } from "@atproto/api";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { useAuthStore } from "./auth-store";
 
 interface UserProfile extends AppBskyActorDefs.ProfileViewDetailed {
-    // Add any additional custom fields here
     lastUpdated?: number;
 }
 
@@ -33,14 +32,14 @@ export const useUserStore = create<UserState>()(
             error: null,
 
             fetchProfile: async () => {
-                const agent = useAuthStore.getState().agent;
-                if (!agent?.session) return;
-
                 set({ isLoading: true, error: null });
 
                 try {
+                    const agent = await getAtpSession();
+                    if (!agent) return;
+
                     const { data: profile } = await agent.getProfile({
-                        actor: agent.session.did
+                        actor: agent.session?.did as string
                     });
 
                     set({
@@ -59,19 +58,19 @@ export const useUserStore = create<UserState>()(
             },
 
             fetchSocialGraph: async () => {
-                const agent = useAuthStore.getState().agent;
-                if (!agent?.session) return;
-
                 set({ isLoading: true, error: null });
 
                 try {
+                    const agent = await getAtpSession();
+                    if (!agent) return;
+
                     // Fetch followers
                     const followers = new Set<string>();
                     let cursor: string | undefined;
 
                     do {
                         const { data } = await agent.getFollowers({
-                            actor: agent.session.did,
+                            actor: agent.session?.did as string,
                             cursor,
                             limit: 100
                         });
@@ -89,7 +88,7 @@ export const useUserStore = create<UserState>()(
 
                     do {
                         const { data } = await agent.getFollows({
-                            actor: agent.session.did,
+                            actor: agent.session?.did as string,
                             cursor,
                             limit: 100
                         });
@@ -116,14 +115,14 @@ export const useUserStore = create<UserState>()(
             },
 
             updateProfile: async (updates: Partial<UserProfile>) => {
-                const agent = useAuthStore.getState().agent;
-                if (!agent?.session) return;
-
                 set({ isLoading: true, error: null });
 
                 try {
+                    const agent = await getAtpSession();
+                    if (!agent) return;
+
                     await agent.api.com.atproto.repo.putRecord({
-                        repo: agent.session.did,
+                        repo: agent.session?.did as string,
                         collection: "app.bsky.actor.profile",
                         rkey: "self",
                         record: {

@@ -20,11 +20,11 @@ import {
     FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAuthStore } from "@/stores/auth-store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -37,16 +37,8 @@ const formSchema = z.object({
 
 export default function SignInForm() {
     const router = useRouter();
-    const { signin, isAuthenticated } = useAuthStore();
 
     const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(() => {
-        // Redirect if already authenticated
-        if (isAuthenticated) {
-            router.push("/");
-        }
-    }, [isAuthenticated, router]);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -60,10 +52,26 @@ export default function SignInForm() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsLoading(true);
         try {
-            await signin(values.handle, values.password);
+            // await signin(values.handle, values.password);
+            const result = await signIn("atproto", {
+                identifier: values.handle,
+                password: values.password,
+                redirect: false,
+                redirectTo: "/"
+            });
+
+            if (result?.error) {
+                throw new Error(result.error);
+            }
+
+            if (!result?.ok) {
+                throw new Error("Authentication failed");
+            }
+
             toast.success("Welcome back!");
             router.push("/");
         } catch (error) {
+            console.error(error);
             toast.error(error instanceof Error ? error.message : "Authentication failed");
             form.setFocus("password");
         } finally {

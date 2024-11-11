@@ -2,10 +2,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import WrappedLayout from "@/components/wrapped-layout";
 import { cn } from "@/lib/utils";
-import { AuthProvider } from "@/providers/auth-provider";
 import { QueryProvider } from "@/providers/query-provider";
 import "@/styles/globals.css";
 import { Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
 import {
     JetBrains_Mono as FontMono,
     Inter as FontSans,
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     description: "A minimal and open-source Bluesky web client."
 };
 
-export default function RootLayout({
+export default async function RootLayout({
     children
 }: Readonly<{
     children: React.ReactNode;
@@ -59,12 +59,12 @@ export default function RootLayout({
                         fontMono.variable
                     )}
                 >
-                    <AuthProvider>
+                    <SessionProvider>
                         <TooltipProvider>
                             <WrappedLayout>{children}</WrappedLayout>
                             <Toaster richColors={true} position="top-right" />
                         </TooltipProvider>
-                    </AuthProvider>
+                    </SessionProvider>
                 </body>
             </html>
         </QueryProvider>

@@ -1,5 +1,5 @@
 // app/services/post.ts
-import { useAuthStore } from "@/stores/auth-store";
+import { getAtpSessionClient } from "@/lib/api";
 import { AppBskyFeedDefs } from "@atproto/api";
 
 export type PostView = AppBskyFeedDefs.FeedViewPost;
@@ -7,11 +7,8 @@ export type PostView = AppBskyFeedDefs.FeedViewPost;
 interface GetPostsOptions {
     cursor?: string;
     limit?: number;
-    // For user profile timeline
     actor?: string;
-    // For liked posts
     includeLikes?: boolean;
-    // For including replies
     includeReplies?: boolean;
 }
 
@@ -22,16 +19,14 @@ export async function getPosts({
     includeLikes = false,
     includeReplies = false
 }: GetPostsOptions = {}) {
-    const agent = useAuthStore.getState().agent;
-    if (!agent?.session) throw new Error("Not authenticated");
-
     try {
+        const agent = await getAtpSessionClient();
+
         if (includeLikes && actor) {
             return getLikedPosts(actor, { cursor, limit });
         }
 
         if (actor) {
-            // Get user timeline with optional replies
             const response = await agent.getAuthorFeed({
                 actor,
                 cursor,
@@ -45,7 +40,6 @@ export async function getPosts({
             };
         }
 
-        // Get home timeline
         const response = await agent.getTimeline({
             cursor,
             limit
@@ -61,11 +55,10 @@ export async function getPosts({
     }
 }
 
+// Update all other functions to use getAtpSessionClient
 export async function getPost(uri: string) {
-    const agent = useAuthStore.getState().agent;
-    if (!agent?.session) throw new Error("Not authenticated");
-
     try {
+        const agent = await getAtpSessionClient();
         const response = await agent.getPostThread({
             uri,
             depth: 0
@@ -83,10 +76,8 @@ export async function getPost(uri: string) {
 }
 
 export async function getLikedPosts(actor: string, { cursor, limit = 20 }: GetPostsOptions = {}) {
-    const agent = useAuthStore.getState().agent;
-    if (!agent?.session) throw new Error("Not authenticated");
-
     try {
+        const agent = await getAtpSessionClient();
         const response = await agent.api.app.bsky.feed.getActorLikes({
             actor,
             cursor,
@@ -103,12 +94,9 @@ export async function getLikedPosts(actor: string, { cursor, limit = 20 }: GetPo
     }
 }
 
-// Post interaction functions
 export async function likePost(uri: string, cid: string) {
-    const agent = useAuthStore.getState().agent;
-    if (!agent?.session) throw new Error("Not authenticated");
-
     try {
+        const agent = await getAtpSessionClient();
         await agent.like(uri, cid);
         return true;
     } catch (error) {
@@ -118,10 +106,8 @@ export async function likePost(uri: string, cid: string) {
 }
 
 export async function unlikePost(uri: string) {
-    const agent = useAuthStore.getState().agent;
-    if (!agent?.session) throw new Error("Not authenticated");
-
     try {
+        const agent = await getAtpSessionClient();
         await agent.deleteLike(uri);
         return true;
     } catch (error) {
@@ -131,10 +117,8 @@ export async function unlikePost(uri: string) {
 }
 
 export async function repost(uri: string, cid: string) {
-    const agent = useAuthStore.getState().agent;
-    if (!agent?.session) throw new Error("Not authenticated");
-
     try {
+        const agent = await getAtpSessionClient();
         await agent.repost(uri, cid);
         return true;
     } catch (error) {
@@ -144,14 +128,38 @@ export async function repost(uri: string, cid: string) {
 }
 
 export async function unrepost(uri: string) {
-    const agent = useAuthStore.getState().agent;
-    if (!agent?.session) throw new Error("Not authenticated");
-
     try {
+        const agent = await getAtpSessionClient();
         await agent.deleteRepost(uri);
         return true;
     } catch (error) {
         console.error("Failed to remove repost:", error);
         throw error;
+    }
+}
+
+export async function checkIfLiked(uri: string) {
+    try {
+        const agent = await getAtpSessionClient();
+        const response = await agent.api.app.bsky.feed.getLikes({ uri });
+        const currentUserDid = agent.session?.did;
+
+        return response.data.likes.some((like) => like.actor.did === currentUserDid);
+    } catch (error) {
+        console.error("Failed to check like status:", error);
+        return false;
+    }
+}
+
+export async function checkIfReposted(uri: string) {
+    try {
+        const agent = await getAtpSessionClient();
+        const response = await agent.api.app.bsky.feed.getRepostedBy({ uri });
+        const currentUserDid = agent.session?.did;
+
+        return response.data.repostedBy.some((repost) => repost.did === currentUserDid);
+    } catch (error) {
+        console.error("Failed to check repost status:", error);
+        return false;
     }
 }

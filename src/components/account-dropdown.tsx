@@ -8,9 +8,9 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { useAuthStore } from "@/stores/auth-store";
 import { AppBskyActorDefs } from "@atproto/api";
 import { Code2Icon, HelpCircleIcon, LogOutIcon, StarIcon } from "lucide-react";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
@@ -19,8 +19,6 @@ interface AccountDropdownProps {
 }
 
 export default function AccountDropdown({ profile }: AccountDropdownProps) {
-    const { signout } = useAuthStore();
-
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -74,7 +72,7 @@ export default function AccountDropdown({ profile }: AccountDropdownProps) {
                 <DropdownMenuItem
                     className="focus:bg-red-500/20"
                     onSelect={() => {
-                        signout();
+                        signOut();
                     }}
                 >
                     <LogOutIcon className="mr-2 h-[1rem] w-[1rem]" />

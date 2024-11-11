@@ -4,8 +4,8 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useUserStore } from "@/stores/user-store";
 import { Bell, Home, Mail, PenSquare, Search, Settings, User } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -13,7 +13,8 @@ import AccountDropdown from "../account-dropdown";
 
 export function LeftSidebar() {
     const pathname = usePathname();
-    const profile = useUserStore((state: any) => state.profile);
+    const { data: session } = useSession();
+    const profile = session?.user?.profile;
 
     const navigationItems = [
         {

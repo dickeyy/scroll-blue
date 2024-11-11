@@ -2,7 +2,7 @@
 
 import { PostsFeed } from "@/components/post/post-feed";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useUserStore } from "@/stores/user-store";
+import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
@@ -15,7 +15,8 @@ export default function ProfileTabs({ handle, initialTab = "posts" }: ProfileTab
     const router = useRouter();
     const searchParams = useSearchParams();
     const currentTab = searchParams.get("tab") || initialTab;
-    const viewerProfile = useUserStore((state) => state.profile);
+    const { data: session } = useSession();
+    const viewerProfile = session?.user;
 
     const tabs = [
         { value: "posts", label: "Posts" },

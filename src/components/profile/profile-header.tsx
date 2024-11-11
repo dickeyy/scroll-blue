@@ -2,13 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { followAccount, unfollowAccount } from "@/services/profile";
-import { useUserStore } from "@/stores/user-store";
 import { formatNumber } from "@/utils/number-format";
 import { genRichText, parseRichText, Segment } from "@/utils/text-processor";
 import { formatDateString } from "@/utils/time";
 import { AppBskyActorDefs } from "@atproto/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CalendarDays } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -21,7 +21,8 @@ interface ProfileHeaderProps {
 
 export default function ProfileHeader({ profile }: ProfileHeaderProps) {
     const queryClient = useQueryClient();
-    const currentUser = useUserStore((state) => state.profile);
+    const { data: session } = useSession();
+    const currentUser = session?.user;
     const [isHovering, setIsHovering] = useState(false);
 
     const [descriptionSegments, setDescriptionSegments] = useState<Segment[]>([]);
@@ -55,13 +56,15 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
     };
 
     useEffect(() => {
-        async function processDescription() {
-            if (profile.description) {
-                setDescriptionSegments(await parseRichText(genRichText(profile.description)));
+        if (profile) {
+            async function processDescription() {
+                if (profile.description) {
+                    setDescriptionSegments(await parseRichText(genRichText(profile.description)));
+                }
             }
+            processDescription();
         }
-        processDescription();
-    }, [profile.description]);
+    }, [profile.description, profile]);
 
     return (
         <div className="flex h-full flex-col">
