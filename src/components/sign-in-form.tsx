@@ -81,7 +81,7 @@ export default function SignInForm() {
     }
 
     return (
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-md bg-secondary">
             <CardHeader>
                 <CardTitle className="font-serif font-bold text-4xl">Sign In</CardTitle>
                 <CardDescription className="text-muted-foreground">
@@ -104,7 +104,11 @@ export default function SignInForm() {
                                     <FormItem>
                                         <FormLabel>Identifier (Email or Handle)</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="kyle.so" {...field} />
+                                            <Input
+                                                className="bg-background border-foreground/10"
+                                                placeholder="kyle.so"
+                                                {...field}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -118,6 +122,7 @@ export default function SignInForm() {
                                         <FormLabel>Password or App password</FormLabel>
                                         <FormControl>
                                             <Input
+                                                className="bg-background border-foreground/10"
                                                 type="password"
                                                 placeholder="super-good-password"
                                                 {...field}
