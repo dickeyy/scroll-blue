@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import WrappedLayout from "@/components/wrapped-layout";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/providers/auth-provider";
@@ -59,8 +60,10 @@ export default function RootLayout({
                     )}
                 >
                     <AuthProvider>
-                        <WrappedLayout>{children}</WrappedLayout>
-                        <Toaster richColors={true} position="top-right" />
+                        <TooltipProvider>
+                            <WrappedLayout>{children}</WrappedLayout>
+                            <Toaster richColors={true} position="top-right" />
+                        </TooltipProvider>
                     </AuthProvider>
                 </body>
             </html>

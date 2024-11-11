@@ -5,8 +5,10 @@ import { followAccount, unfollowAccount } from "@/services/profile";
 import { useUserStore } from "@/stores/user-store";
 import { formatNumber } from "@/utils/number-format";
 import { genRichText, parseRichText, Segment } from "@/utils/text-processor";
+import { formatDateString } from "@/utils/time";
 import { AppBskyActorDefs } from "@atproto/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CalendarDays } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -97,7 +99,7 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
                         <a
                             href={`https://bsky.app/profile/${profile.handle}`}
                             target="_blank"
-                            className="text-muted-foreground"
+                            className="text-muted-foreground text-sm"
                         >
                             @{profile.handle}
                         </a>
@@ -137,6 +139,14 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
                         className="whitespace-pre-wrap text-sm"
                         segments={descriptionSegments}
                     />
+                )}
+
+                {/* Joined Date */}
+                {profile.createdAt && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <CalendarDays className="h-4 w-4" />
+                        <time>Joined {formatDateString(profile.createdAt || "")}</time>
+                    </div>
                 )}
 
                 {/* Stats */}

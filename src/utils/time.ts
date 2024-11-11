@@ -28,3 +28,10 @@ export function getPostTime(indexedAt: string): string {
         hour12: true
     });
 }
+
+export function formatDateString(createdAt: string): string {
+    return new Date(createdAt).toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric"
+    });
+}
