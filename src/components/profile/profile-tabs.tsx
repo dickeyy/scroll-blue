@@ -20,7 +20,8 @@ export default function ProfileTabs({ handle, initialTab = "posts" }: ProfileTab
 
     const tabs = [
         { value: "posts", label: "Posts" },
-        { value: "replies", label: "Posts & Replies" }
+        { value: "replies", label: "Replies" },
+        { value: "media", label: "Media" }
     ];
 
     // Set initial tab in URL if not present
@@ -59,6 +60,10 @@ export default function ProfileTabs({ handle, initialTab = "posts" }: ProfileTab
 
             <TabsContent value="replies" className="mt-4">
                 <PostsFeed actor={handle} includeReplies={true} />
+            </TabsContent>
+
+            <TabsContent value="media" className="mt-4">
+                <PostsFeed actor={handle} includeMedia={true} includeReplies={false} />
             </TabsContent>
 
             {viewerProfile?.handle === handle && (

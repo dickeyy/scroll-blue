@@ -10,28 +10,50 @@ interface GetPostsOptions {
     actor?: string;
     includeLikes?: boolean;
     includeReplies?: boolean;
+    includeMedia?: boolean;
 }
 
 export async function getPosts({
     cursor,
-    limit = 20,
     actor,
     includeLikes = false,
-    includeReplies = false
+    includeReplies = false,
+    includeMedia = false
 }: GetPostsOptions = {}) {
     try {
         const agent = await getAtpSessionClient();
 
         if (includeLikes && actor) {
-            return getLikedPosts(actor, { cursor, limit });
+            return getLikedPosts(actor, { cursor });
         }
 
         if (actor) {
+            let filter = "posts_no_replies"; // Default filter excludes replies
+
+            if (includeReplies) {
+                filter = "posts_with_replies";
+            } else if (includeMedia) {
+                // For media posts, we'll need to filter replies out manually since
+                // the API doesn't have a specific media-no-replies filter
+                const response = await agent.getAuthorFeed({
+                    actor,
+                    cursor,
+                    filter: "posts_with_media"
+                });
+
+                // Filter out any posts that are replies
+                const filteredFeed = response.data.feed.filter((post) => !post.reply);
+
+                return {
+                    posts: filteredFeed,
+                    cursor: response.data.cursor
+                };
+            }
+
             const response = await agent.getAuthorFeed({
                 actor,
                 cursor,
-                limit,
-                filter: includeReplies ? "posts_with_replies" : "posts_no_replies"
+                filter
             });
 
             return {
@@ -41,8 +63,7 @@ export async function getPosts({
         }
 
         const response = await agent.getTimeline({
-            cursor,
-            limit
+            cursor
         });
 
         return {
