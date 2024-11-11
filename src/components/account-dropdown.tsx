@@ -24,7 +24,7 @@ export default function AccountDropdown({ profile }: AccountDropdownProps) {
             <DropdownMenuTrigger asChild>
                 <Button
                     variant="ghost"
-                    className="flex h-fit w-full items-center justify-between gap-3  px-1 py-1 pr-2 text-left"
+                    className="flex h-fit w-full items-center justify-between gap-3 rounded-full  px-1 py-1 pr-2 text-left"
                 >
                     <div className="flex flex-row items-center gap-3">
                         <Avatar className="h-9 w-9">
