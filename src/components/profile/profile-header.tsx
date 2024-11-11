@@ -85,7 +85,7 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
                     <Avatar className="h-fit w-fit rounded-lg">
                         <AvatarImage
                             src={profile.avatar}
-                            className="h-[96px] w-[96px] rounded-full border-8 border-background"
+                            className="h-[96px] w-[96px] rounded-full border-[6px] border-background"
                         />
                         <AvatarFallback className="h-[96px] w-[96px] rounded-full bg-muted border-8 border-background">
                             {(profile.handle[0] + profile.handle[1]).toUpperCase() || "SB"}
