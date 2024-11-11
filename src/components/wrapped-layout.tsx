@@ -30,7 +30,7 @@ export default function WrappedLayout({ children }: { children: React.ReactNode 
                 </main>
 
                 {/* Right Spacer for Balance */}
-                <div className="w-[68px] flex-shrink-0 md:w-[240px] hidden md:block" />
+                <div className="w-[68px] flex-shrink-0 md:w-[240px] hidden lg:block" />
             </div>
         </div>
     );

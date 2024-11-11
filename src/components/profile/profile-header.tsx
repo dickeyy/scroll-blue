@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { followAccount, unfollowAccount } from "@/services/profile";
 import { useUserStore } from "@/stores/user-store";
 import { formatNumber } from "@/utils/number-format";
+import { genRichText, parseRichText, Segment } from "@/utils/text-processor";
 import { AppBskyActorDefs } from "@atproto/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import RichTextRenderer from "../rich-text-renderer";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface ProfileHeaderProps {
@@ -19,6 +21,8 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
     const queryClient = useQueryClient();
     const currentUser = useUserStore((state) => state.profile);
     const [isHovering, setIsHovering] = useState(false);
+
+    const [descriptionSegments, setDescriptionSegments] = useState<Segment[]>([]);
 
     // Follow mutation
     const followMutation = useMutation({
@@ -47,6 +51,15 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
             toast.error("You must be logged in to follow someone.");
         }
     };
+
+    useEffect(() => {
+        async function processDescription() {
+            if (profile.description) {
+                setDescriptionSegments(await parseRichText(genRichText(profile.description)));
+            }
+        }
+        processDescription();
+    }, [profile.description]);
 
     return (
         <div className="flex h-full flex-col">
@@ -120,7 +133,10 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
 
                 {/* Bio */}
                 {profile.description && (
-                    <p className="whitespace-pre-wrap text-sm">{profile.description}</p>
+                    <RichTextRenderer
+                        className="whitespace-pre-wrap text-sm"
+                        segments={descriptionSegments}
+                    />
                 )}
 
                 {/* Stats */}
