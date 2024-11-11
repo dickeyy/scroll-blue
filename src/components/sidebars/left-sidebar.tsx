@@ -96,24 +96,7 @@ export function LeftSidebar() {
 
             {/* Profile Section */}
             <div className="flex flex-col gap-2">
-                {profile && (
-                    // <div className="flex w-full justify-start gap-2 p-2 md:p-4">
-                    //     <img
-                    //         src={profile.avatar || "/default-avatar.png"}
-                    //         alt={profile.displayName || profile.handle}
-                    //         className="h-8 w-8 rounded-full"
-                    //     />
-                    //     <div className="hidden md:block">
-                    //         <p className="text-start text-sm font-semibold">
-                    //             {profile.displayName}
-                    //         </p>
-                    //         <p className="text-start text-xs text-muted-foreground">
-                    //             @{profile.handle}
-                    //         </p>
-                    //     </div>
-                    // </div>
-                    <AccountDropdown profile={profile} />
-                )}
+                {profile && <AccountDropdown profile={profile} />}
             </div>
         </div>
     );
