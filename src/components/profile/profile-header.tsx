@@ -24,7 +24,8 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
     const { data: session } = useSession();
     const currentUser = session?.user;
     const [isHovering, setIsHovering] = useState(false);
-
+    console.log("Current", currentUser?.did);
+    console.log("Profile", profile.did);
     const [descriptionSegments, setDescriptionSegments] = useState<Segment[]>([]);
 
     // Follow mutation
