@@ -2,6 +2,7 @@
 
 import { PostsFeed } from "@/components/post/post-feed";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useUserStore } from "@/stores/user-store";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
@@ -14,11 +15,11 @@ export default function ProfileTabs({ handle, initialTab = "posts" }: ProfileTab
     const router = useRouter();
     const searchParams = useSearchParams();
     const currentTab = searchParams.get("tab") || initialTab;
+    const viewerProfile = useUserStore((state) => state.profile);
 
     const tabs = [
         { value: "posts", label: "Posts" },
-        { value: "replies", label: "Posts & Replies" },
-        { value: "likes", label: "Likes" }
+        { value: "replies", label: "Posts & Replies" }
     ];
 
     // Set initial tab in URL if not present
@@ -37,13 +38,18 @@ export default function ProfileTabs({ handle, initialTab = "posts" }: ProfileTab
     };
 
     return (
-        <Tabs value={currentTab} onValueChange={updateTab} className="mt-4">
-            <TabsList className="px-4">
+        <Tabs value={currentTab} onValueChange={updateTab} className="mt-4 w-full">
+            <TabsList className="w-full">
                 {tabs.map((tab) => (
-                    <TabsTrigger key={tab.value} value={tab.value}>
+                    <TabsTrigger className="w-full" key={tab.value} value={tab.value}>
                         {tab.label}
                     </TabsTrigger>
                 ))}
+                {viewerProfile?.handle === handle && (
+                    <TabsTrigger className="w-full" value="likes">
+                        Likes
+                    </TabsTrigger>
+                )}
             </TabsList>
 
             <TabsContent value="posts" className="mt-4">
@@ -54,9 +60,11 @@ export default function ProfileTabs({ handle, initialTab = "posts" }: ProfileTab
                 <PostsFeed actor={handle} includeReplies={true} />
             </TabsContent>
 
-            <TabsContent value="likes" className="mt-4">
-                <PostsFeed actor={handle} includeLikes={true} />
-            </TabsContent>
+            {viewerProfile?.handle === handle && (
+                <TabsContent value="likes" className="mt-4">
+                    <PostsFeed actor={handle} includeLikes={true} />
+                </TabsContent>
+            )}
         </Tabs>
     );
 }
