@@ -34,8 +34,8 @@ export default function HomeHero() {
             >
                 A minimal and open-source{" "}
                 <span className="hover:text-blue-500 transition-colors underline">
-                    <a href="https://bsky.social" target="_blank">
-                        Bluesky
+                    <a href="https://atproto.com" target="_blank">
+                        ATProtocol
                     </a>
                 </span>{" "}
                 web client.

@@ -33,7 +33,7 @@ const fontMono = FontMono({
 // metadata
 export const metadata: Metadata = {
     title: "scroll.blue",
-    description: "A minimal and open-source Bluesky web client."
+    description: "A minimal and open-source ATProtocol web client."
 };
 
 export default async function RootLayout({

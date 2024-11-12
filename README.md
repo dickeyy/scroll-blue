@@ -1,6 +1,6 @@
 # scroll.blue
 
-A minimal and open-source [Bluesky](https://bsky.social) web client.
+A minimal and open-source [ATProtocol](https://atproto.com) web client.
 
 Coming soon!
 
