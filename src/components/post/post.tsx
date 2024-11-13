@@ -8,10 +8,13 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { cn } from "@/lib/utils";
 import { genRichText, parseRichText, Segment } from "@/utils/text-processor";
 import { getPostAge } from "@/utils/time";
+import "@vidstack/react/player/styles/default/layouts/video.css";
+import "@vidstack/react/player/styles/default/theme.css";
 import { Ellipsis } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import RichTextRenderer from "../rich-text-renderer";
+import { VideoEmbed } from "./embeds/video-embed";
 
 // Types
 interface Author {
@@ -243,7 +246,10 @@ export default function Post({ post, showReply = true }: PostProps) {
         return null;
     }
 
+    console.log(post);
+
     const hasImages = post.embed?.images?.length > 0;
+    const hasVideo = post.embed?.$type == "app.bsky.embed.video#view";
     const isQuotePost = post.embed?.$type === "app.bsky.embed.record#view";
     const isReplyPost = showReply && post.reply?.parent;
 
@@ -269,6 +275,7 @@ export default function Post({ post, showReply = true }: PostProps) {
                 />
 
                 {hasImages && <MediaGrid images={post.embed.images} />}
+                {hasVideo && <VideoEmbed video={post.embed} />}
                 {isQuotePost && <QuotePost embed={post.embed} />}
             </CardContent>
 
