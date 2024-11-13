@@ -2,15 +2,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import PostButtons from "@/components/post/post-buttons";
+import PostActions from "@/components/post/post-actions";
 import PostSkeleton from "@/components/post/post-skeleton";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { genRichText, parseRichText, Segment } from "@/utils/text-processor";
 import { getPostAge } from "@/utils/time";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import "@vidstack/react/player/styles/default/theme.css";
-import { Ellipsis } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import RichTextRenderer from "../rich-text-renderer";
@@ -21,19 +20,6 @@ interface Author {
     handle: string;
     displayName: string;
     avatar: string;
-}
-
-interface PostMetadata {
-    uri: string;
-    cid: string;
-    likeCount: number;
-    repostCount: number;
-    replyCount: number;
-    indexedAt: string;
-    viewer?: {
-        like?: boolean;
-        repost?: boolean;
-    };
 }
 
 interface EmbedImage {
@@ -87,34 +73,6 @@ const MediaGrid = ({ images }: { images: EmbedImage[] }) => (
             />
         ))}
     </div>
-);
-
-const PostActions = ({ metadata }: { metadata: PostMetadata }) => (
-    <CardFooter className="p-3 grid grid-cols-4 gap-6 w-full">
-        <PostButtons
-            type="like"
-            count={metadata.likeCount || 0}
-            active={!!metadata.viewer?.like}
-            postUri={metadata.uri}
-            postCid={metadata.cid}
-        />
-        <PostButtons
-            type="repost"
-            count={metadata.repostCount || 0}
-            active={!!metadata.viewer?.repost}
-            postUri={metadata.uri}
-            postCid={metadata.cid}
-        />
-        <PostButtons
-            type="reply"
-            count={metadata.replyCount || 0}
-            postUri={metadata.uri}
-            postCid={metadata.cid}
-        />
-        <div className="flex items-center gap-2 p-2">
-            <Ellipsis className="h-4 w-4" />
-        </div>
-    </CardFooter>
 );
 
 const QuotePost = ({ embed }: { embed: any }) => {
@@ -245,8 +203,6 @@ export default function Post({ post, showReply = true }: PostProps) {
     if (!post?.record?.text) {
         return null;
     }
-
-    console.log(post);
 
     const hasImages = post.embed?.images?.length > 0;
     const hasVideo = post.embed?.$type == "app.bsky.embed.video#view";
