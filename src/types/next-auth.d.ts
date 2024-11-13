@@ -8,6 +8,7 @@ declare module "next-auth" {
         did: string;
         handle: string;
         session: any;
+        service: string;
         profile?: AppBskyActorDefs.ProfileViewDetailed;
     }
 
@@ -16,6 +17,7 @@ declare module "next-auth" {
             did: string;
             handle: string;
             session: any;
+            service: string;
             profile?: AppBskyActorDefs.ProfileViewDetailed;
         };
     }
@@ -26,6 +28,7 @@ declare module "next-auth/jwt" {
         did: string;
         handle: string;
         session: any;
+        service: string;
         profile?: AppBskyActorDefs.ProfileViewDetailed;
     }
 }

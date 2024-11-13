@@ -29,21 +29,22 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+const DEFAULT_SERVICE = "https://bsky.social";
+
 const formSchema = z.object({
-    hostingProvider: z.string().min(2).url(),
+    service: z.string().min(1).url().default(DEFAULT_SERVICE),
     handle: z.string().min(1),
     password: z.string().min(1)
 });
 
 export default function SignInForm() {
     const router = useRouter();
-
     const [isLoading, setIsLoading] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            hostingProvider: "https://bsky.social",
+            service: DEFAULT_SERVICE,
             handle: "",
             password: ""
         }
@@ -52,10 +53,10 @@ export default function SignInForm() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsLoading(true);
         try {
-            // await signin(values.handle, values.password);
             const result = await signIn("atproto", {
                 identifier: values.handle,
                 password: values.password,
+                service: values.service,
                 redirect: false,
                 redirectTo: "/"
             });
@@ -77,7 +78,6 @@ export default function SignInForm() {
         } finally {
             setIsLoading(false);
         }
-        setIsLoading(false);
     }
 
     return (
@@ -87,22 +87,45 @@ export default function SignInForm() {
                 <CardDescription className="text-muted-foreground">
                     Sign in using your{" "}
                     <span className="underline hover:text-foreground transition-colors">
-                        <Link href="https://bsky.social">Bluesky</Link>
-                    </span>{" "}
-                    credentials.
+                        <Link href="https://atproto.com">ATProtocol</Link>
+                    </span>
+                    . For most users, you&apos;ll want to use your Bluesky account.
                 </CardDescription>
             </CardHeader>
 
             <CardContent>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
-                        <div className="flex flex-col space-y-6">
+                        <div className="flex flex-col space-y-4">
+                            <FormField
+                                control={form.control}
+                                name="service"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-1">
+                                        <FormLabel>Service (PDS URL)</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                className="bg-background border-foreground/10"
+                                                // value={DEFAULT_SERVICE}
+                                                placeholder="https://bsky.social"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormDescription>
+                                            If you don&apos;t know what this is, just leave it as
+                                            is.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
                             <FormField
                                 control={form.control}
                                 name="handle"
                                 render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Identifier (Email or Handle)</FormLabel>
+                                    <FormItem className="space-y-1">
+                                        <FormLabel>Identifier (Email, Handle, or DID)</FormLabel>
                                         <FormControl>
                                             <Input
                                                 className="bg-background border-foreground/10"
@@ -118,7 +141,7 @@ export default function SignInForm() {
                                 control={form.control}
                                 name="password"
                                 render={({ field }) => (
-                                    <FormItem>
+                                    <FormItem className="space-y-1">
                                         <FormLabel>Password or App password</FormLabel>
                                         <FormControl>
                                             <Input

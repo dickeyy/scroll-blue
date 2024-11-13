@@ -2,9 +2,12 @@
 import { getAtpSessionClient } from "@/lib/api";
 import { AppBskyActorDefs } from "@atproto/api";
 
-export async function getProfile(actor: string): Promise<AppBskyActorDefs.ProfileViewDetailed> {
+export async function getProfile(
+    actor: string,
+    service = "https://bsky.social"
+): Promise<AppBskyActorDefs.ProfileViewDetailed> {
     try {
-        const agent = await getAtpSessionClient();
+        const agent = await getAtpSessionClient(service);
         const { data } = await agent.getProfile({
             actor: actor
         });
@@ -16,9 +19,9 @@ export async function getProfile(actor: string): Promise<AppBskyActorDefs.Profil
     }
 }
 
-export async function followAccount(did: string) {
+export async function followAccount(did: string, service = "https://bsky.social") {
     try {
-        const agent = await getAtpSessionClient();
+        const agent = await getAtpSessionClient(service);
         await agent.follow(did);
         return true;
     } catch (error) {
@@ -27,9 +30,9 @@ export async function followAccount(did: string) {
     }
 }
 
-export async function unfollowAccount(did: string) {
+export async function unfollowAccount(did: string, service = "https://bsky.social") {
     try {
-        const agent = await getAtpSessionClient();
+        const agent = await getAtpSessionClient(service);
         await agent.deleteFollow(did);
         return true;
     } catch (error) {
@@ -39,9 +42,12 @@ export async function unfollowAccount(did: string) {
 }
 
 // Helper function to check if the current user follows an account
-export async function checkIfFollowing(did: string): Promise<boolean> {
+export async function checkIfFollowing(
+    did: string,
+    service = "https://bsky.social"
+): Promise<boolean> {
     try {
-        const agent = await getAtpSessionClient();
+        const agent = await getAtpSessionClient(service);
         const { data } = await agent.getFollows({
             actor: agent.session?.did as string,
             limit: 100
@@ -55,9 +61,12 @@ export async function checkIfFollowing(did: string): Promise<boolean> {
 }
 
 // Get followers count
-export async function getFollowersCount(did: string): Promise<number> {
+export async function getFollowersCount(
+    did: string,
+    service = "https://bsky.social"
+): Promise<number> {
     try {
-        const agent = await getAtpSessionClient();
+        const agent = await getAtpSessionClient(service);
         const { data } = await agent.getProfile({ actor: did });
         return data.followersCount ?? 0;
     } catch (error) {

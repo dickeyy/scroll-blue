@@ -6,6 +6,7 @@ import ProfileSkeleton from "@/components/profile/profile-skeleton";
 import ProfileTabs from "@/components/profile/profile-tabs";
 import { getProfile } from "@/services/profile";
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 interface ProfileViewProps {
     handle: string;
@@ -13,13 +14,15 @@ interface ProfileViewProps {
 }
 
 export function ProfileView({ handle, initialTab }: ProfileViewProps) {
+    const { data: session } = useSession();
+
     const {
         data: profile,
         status,
         error
     } = useQuery({
         queryKey: ["profile", handle],
-        queryFn: () => getProfile(handle),
+        queryFn: () => getProfile(handle, session?.user.service || "https://bsky.social"),
         staleTime: 1000 * 60 * 5 // Consider data stale after 5 minutes
     });
 

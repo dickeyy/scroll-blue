@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// ./lib/next-auth.ts
 import { AppBskyActorDefs, AtpAgent } from "@atproto/api";
 import { jwtDecode } from "jwt-decode";
 import NextAuth, { CredentialsSignin, Session, User } from "next-auth";
@@ -18,6 +17,7 @@ interface BskyUser extends User {
     did: string;
     handle: string;
     session: any;
+    service: string;
     profile?: AppBskyActorDefs.ProfileViewDetailed;
 }
 
@@ -28,7 +28,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             name: "atproto",
             credentials: {
                 identifier: { label: "Handle", type: "text" },
-                password: { label: "Password", type: "password" }
+                password: { label: "Password", type: "password" },
+                service: { label: "Service", type: "text", defaultValue: "https://bsky.social" }
             },
             type: "credentials",
             async authorize(credentials) {
@@ -36,7 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     throw new AuthError("No credentials provided");
                 }
 
-                const agent = new AtpAgent({ service: "https://bsky.social" });
+                const agent = new AtpAgent({ service: credentials.service as string });
 
                 const response = await agent.login({
                     identifier: credentials.identifier as string,
@@ -58,6 +59,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         did: response.data.did,
                         handle: response.data.handle,
                         session: agent.session,
+                        service: credentials.service as string,
                         profile: profile
                     } as BskyUser;
                 } catch (error) {
@@ -66,7 +68,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     return {
                         did: response.data.did,
                         handle: response.data.handle,
-                        session: agent.session
+                        session: agent.session,
+                        service: credentials.service as string
                     } as BskyUser;
                 }
             }
@@ -78,13 +81,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.id = user.did;
                 token.handle = user.handle;
                 token.session = user.session;
+                token.service = user.service;
                 token.profile = user.profile;
             }
             return token;
         },
 
         async session({ session, token }: { session: Session; token: JWT }): Promise<Session> {
-            const agent = new AtpAgent({ service: "https://bsky.social" });
+            const agent = new AtpAgent({ service: token.service as string });
 
             // Type assertion for the token
             const bskyToken = token as JWT & BskyUser;
@@ -95,6 +99,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 did: bskyToken.id as string,
                 handle: bskyToken.handle,
                 session: bskyToken.session,
+                service: bskyToken.service,
                 profile: bskyToken.profile
             };
 

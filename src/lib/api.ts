@@ -6,14 +6,14 @@ import { auth } from "./next-auth";
 
 const isServer = () => typeof window === "undefined";
 
-export const agent = new AtpAgent({
-    service: "https://bsky.social"
-});
-
-export async function getAtpSession() {
-    const agent = new AtpAgent({
-        service: "https://bsky.social"
+export function createAgent(service = "https://bsky.social"): AtpAgent {
+    return new AtpAgent({
+        service: service
     });
+}
+
+export async function getAtpSession(service = "https://bsky.social") {
+    const agent = createAgent(service);
 
     try {
         // Use different auth methods for client and server
@@ -43,9 +43,9 @@ export async function getAtpSession() {
 }
 
 // Helper function for client-side use
-export async function getAtpSessionClient() {
+export async function getAtpSessionClient(service = "https://bsky.social") {
     try {
-        return await getAtpSession();
+        return await getAtpSession(service);
     } catch (error) {
         // Handle client-side authentication errors
         window.location.href = "/home";

@@ -11,6 +11,7 @@ interface GetPostsOptions {
     includeLikes?: boolean;
     includeReplies?: boolean;
     includeMedia?: boolean;
+    service?: string;
 }
 
 export async function getPosts({
@@ -18,10 +19,11 @@ export async function getPosts({
     actor,
     includeLikes = false,
     includeReplies = false,
-    includeMedia = false
+    includeMedia = false,
+    service = "https://bsky.social"
 }: GetPostsOptions = {}) {
     try {
-        const agent = await getAtpSessionClient();
+        const agent = await getAtpSessionClient(service);
 
         if (includeLikes && actor) {
             return getLikedPosts(actor, { cursor });
@@ -77,9 +79,9 @@ export async function getPosts({
 }
 
 // Update all other functions to use getAtpSessionClient
-export async function getPost(uri: string) {
+export async function getPost(uri: string, service = "https://bsky.social") {
     try {
-        const agent = await getAtpSessionClient();
+        const agent = await getAtpSessionClient(service);
         const response = await agent.getPostThread({
             uri,
             depth: 0
@@ -96,9 +98,13 @@ export async function getPost(uri: string) {
     }
 }
 
-export async function getLikedPosts(actor: string, { cursor, limit = 20 }: GetPostsOptions = {}) {
+export async function getLikedPosts(
+    actor: string,
+    { cursor, limit = 20 }: GetPostsOptions = {},
+    service = "https://bsky.social"
+) {
     try {
-        const agent = await getAtpSessionClient();
+        const agent = await getAtpSessionClient(service);
         const response = await agent.api.app.bsky.feed.getActorLikes({
             actor,
             cursor,
@@ -115,9 +121,9 @@ export async function getLikedPosts(actor: string, { cursor, limit = 20 }: GetPo
     }
 }
 
-export async function likePost(uri: string, cid: string) {
+export async function likePost(uri: string, cid: string, service = "https://bsky.social") {
     try {
-        const agent = await getAtpSessionClient();
+        const agent = await getAtpSessionClient(service);
         await agent.like(uri, cid);
         return true;
     } catch (error) {
@@ -126,9 +132,9 @@ export async function likePost(uri: string, cid: string) {
     }
 }
 
-export async function unlikePost(uri: string) {
+export async function unlikePost(uri: string, service = "https://bsky.social") {
     try {
-        const agent = await getAtpSessionClient();
+        const agent = await getAtpSessionClient(service);
         await agent.deleteLike(uri);
         return true;
     } catch (error) {
@@ -137,9 +143,9 @@ export async function unlikePost(uri: string) {
     }
 }
 
-export async function repost(uri: string, cid: string) {
+export async function repost(uri: string, cid: string, service = "https://bsky.social") {
     try {
-        const agent = await getAtpSessionClient();
+        const agent = await getAtpSessionClient(service);
         await agent.repost(uri, cid);
         return true;
     } catch (error) {
@@ -148,9 +154,9 @@ export async function repost(uri: string, cid: string) {
     }
 }
 
-export async function unrepost(uri: string) {
+export async function unrepost(uri: string, service = "https://bsky.social") {
     try {
-        const agent = await getAtpSessionClient();
+        const agent = await getAtpSessionClient(service);
         await agent.deleteRepost(uri);
         return true;
     } catch (error) {
@@ -159,9 +165,9 @@ export async function unrepost(uri: string) {
     }
 }
 
-export async function checkIfLiked(uri: string) {
+export async function checkIfLiked(uri: string, service = "https://bsky.social") {
     try {
-        const agent = await getAtpSessionClient();
+        const agent = await getAtpSessionClient(service);
         const response = await agent.api.app.bsky.feed.getLikes({ uri });
         const currentUserDid = agent.session?.did;
 
@@ -172,9 +178,9 @@ export async function checkIfLiked(uri: string) {
     }
 }
 
-export async function checkIfReposted(uri: string) {
+export async function checkIfReposted(uri: string, service = "https://bsky.social") {
     try {
-        const agent = await getAtpSessionClient();
+        const agent = await getAtpSessionClient(service);
         const response = await agent.api.app.bsky.feed.getRepostedBy({ uri });
         const currentUserDid = agent.session?.did;
 

@@ -1,4 +1,4 @@
-import { agent } from "@/lib/api";
+import { createAgent } from "@/lib/api";
 import { RichText } from "@atproto/api";
 
 export function genRichText(text: string): RichText {
@@ -7,6 +7,8 @@ export function genRichText(text: string): RichText {
     });
     return rt;
 }
+
+const agent = createAgent();
 
 export interface Segment {
     type: "text" | "link" | "mention" | "tag";

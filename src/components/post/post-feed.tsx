@@ -9,6 +9,7 @@ import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 import { getPosts } from "@/services/post";
 import { AppBskyFeedDefs } from "@atproto/api";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { useRef } from "react";
 
 interface PostsFeedProps {
@@ -19,6 +20,8 @@ interface PostsFeedProps {
 }
 
 export function PostsFeed({ actor, includeLikes, includeReplies, includeMedia }: PostsFeedProps) {
+    const { data: session } = useSession();
+
     const loadMoreRef = useRef<HTMLDivElement>(null);
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status, error } =
@@ -30,7 +33,8 @@ export function PostsFeed({ actor, includeLikes, includeReplies, includeMedia }:
                     actor,
                     includeLikes,
                     includeReplies,
-                    includeMedia
+                    includeMedia,
+                    service: session?.user.service || "https://bsky.social"
                 }),
             getNextPageParam: (lastPage: any) => lastPage.cursor,
             initialPageParam: undefined,
