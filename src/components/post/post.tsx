@@ -1,11 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import PostActions from "@/components/post/post-actions";
 import PostSkeleton from "@/components/post/post-skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { genRichText, parseRichText, Segment } from "@/utils/text-processor";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import "@vidstack/react/player/styles/default/theme.css";
@@ -13,15 +11,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import RichTextRenderer from "../rich-text-renderer";
 import AuthorInfo from "./author-info";
+import MediaGrid from "./embeds/media-grid";
 import { VideoEmbed } from "./embeds/video-embed";
 
 // Types
-
-interface EmbedImage {
-    thumb: string;
-    alt: string;
-    aspectRatio?: number;
-}
 
 interface PostProps {
     post: any; // TODO: Replace with proper type
@@ -29,21 +22,6 @@ interface PostProps {
 }
 
 // Subcomponents
-const MediaGrid = ({ images }: { images: EmbedImage[] }) => (
-    <div className={cn("grid gap-2 w-full", images.length > 1 ? "grid-cols-2" : "grid-cols-1")}>
-        {images.map((image: EmbedImage, i: number) => (
-            <img
-                key={i}
-                src={image.thumb}
-                alt={image.alt}
-                className="rounded-lg w-full h-full object-cover"
-                style={{
-                    aspectRatio: image.aspectRatio?.toString() ?? "1"
-                }}
-            />
-        ))}
-    </div>
-);
 
 const QuotePost = ({ embed }: { embed: any }) => {
     const [textSegments, setTextSegments] = useState<Segment[]>([]);
@@ -112,9 +90,7 @@ const ReplyPost = ({ reply }: { reply: any }) => {
     return (
         <div className="relative">
             <CardHeader className="p-3 space-y-0">
-                <div className="flex items-center justify-between">
-                    <AuthorInfo author={reply.parent.author} timestamp={reply.parent.indexedAt} />
-                </div>
+                <AuthorInfo author={reply.parent.author} timestamp={reply.parent.indexedAt} />
             </CardHeader>
             <CardContent className="pt-0 px-3 pb-3">
                 <RichTextRenderer
