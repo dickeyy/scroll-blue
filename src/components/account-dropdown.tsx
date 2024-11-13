@@ -9,7 +9,7 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { AppBskyActorDefs } from "@atproto/api";
-import { Code2Icon, HelpCircleIcon, LogOutIcon, StarIcon } from "lucide-react";
+import { Code2Icon, HelpCircleIcon, LogOutIcon, StarIcon, UserIcon } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -49,6 +49,15 @@ export default function AccountDropdown({ profile }: AccountDropdownProps) {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
+                <DropdownMenuItem asChild>
+                    <Link href={`/${profile.handle}`}>
+                        <UserIcon className="mr-2 h-[1rem] w-[1rem]" />
+                        Profile
+                    </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
                 <DropdownMenuItem asChild>
                     <Link href="https://github.com/dickeyy/scroll-blue" target="_blank">
                         <Code2Icon className="mr-2 h-[1rem] w-[1rem]" />
