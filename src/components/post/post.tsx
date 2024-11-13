@@ -6,11 +6,12 @@ import PostButtons from "@/components/post/post-buttons";
 import PostSkeleton from "@/components/post/post-skeleton";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { renderRichText } from "@/utils/parse-text";
+import { genRichText, parseRichText, Segment } from "@/utils/text-processor";
 import { getPostAge } from "@/utils/time";
 import { Ellipsis } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import RichTextRenderer from "../rich-text-renderer";
 
 // Types
 interface Author {
@@ -114,6 +115,17 @@ const PostActions = ({ metadata }: { metadata: PostMetadata }) => (
 );
 
 const QuotePost = ({ embed }: { embed: any }) => {
+    const [textSegments, setTextSegments] = useState<Segment[]>([]);
+
+    useEffect(() => {
+        async function processText() {
+            if (embed?.record?.text) {
+                setTextSegments(await parseRichText(genRichText(embed.record.text)));
+            }
+        }
+        processText();
+    }, [embed]);
+
     if (!embed?.record?.author) {
         return <div className="text-sm text-muted-foreground">Post not available</div>;
     }
@@ -140,15 +152,27 @@ const QuotePost = ({ embed }: { embed: any }) => {
                 </Link>
             </div>
             {embed.record.value?.text && (
-                <p className="mt-2 text-sm whitespace-pre-wrap">
-                    {renderRichText(embed.record.value.text)}
-                </p>
+                <RichTextRenderer
+                    className="mt-2 text-sm whitespace-pre-wrap"
+                    segments={textSegments}
+                />
             )}
         </div>
     );
 };
 
 const ReplyPost = ({ reply }: { reply: any }) => {
+    const [textSegments, setTextSegments] = useState<Segment[]>([]);
+
+    useEffect(() => {
+        async function processText() {
+            if (reply?.parent?.record?.text) {
+                setTextSegments(await parseRichText(genRichText(reply.parent.record.text)));
+            }
+        }
+        processText();
+    }, [reply.parent.record]);
+
     // Check if we have all required data
     if (!reply?.parent?.author || !reply?.parent?.record?.text) {
         return null;
@@ -170,9 +194,10 @@ const ReplyPost = ({ reply }: { reply: any }) => {
                 </div>
             </CardHeader>
             <CardContent className="pt-0 px-3 pb-3">
-                <p className="text-start text-sm text-foreground whitespace-pre-wrap">
-                    {renderRichText(reply.parent.record.text)}
-                </p>
+                <RichTextRenderer
+                    className="text-start text-sm text-foreground whitespace-pre-wrap"
+                    segments={textSegments}
+                />
                 {reply.parent.embed?.images?.length > 0 && (
                     <MediaGrid images={reply.parent.embed.images} />
                 )}
@@ -195,10 +220,20 @@ const ReplyPost = ({ reply }: { reply: any }) => {
 // Main Component
 export default function Post({ post, showReply = true }: PostProps) {
     const [mounted, setMounted] = useState(false);
+    const [textSegments, setTextSegments] = useState<Segment[]>([]);
 
     useEffect(() => {
         setMounted(true);
     }, []);
+
+    useEffect(() => {
+        async function processText() {
+            if (post.record.text) {
+                setTextSegments(await parseRichText(genRichText(post.record.text)));
+            }
+        }
+        processText();
+    }, [post.record.text]);
 
     if (!mounted) {
         return <PostSkeleton />;
@@ -228,9 +263,10 @@ export default function Post({ post, showReply = true }: PostProps) {
             </CardHeader>
 
             <CardContent className="pt-0 px-3 pb-3 space-y-2">
-                <p className="text-start text-sm text-foreground whitespace-pre-wrap">
-                    {renderRichText(post.record.text)}
-                </p>
+                <RichTextRenderer
+                    className="text-start text-sm text-foreground whitespace-pre-wrap"
+                    segments={textSegments}
+                />
 
                 {hasImages && <MediaGrid images={post.embed.images} />}
                 {isQuotePost && <QuotePost embed={post.embed} />}

@@ -2,6 +2,7 @@ import { createAgent } from "@/lib/api";
 import { RichText } from "@atproto/api";
 
 export function genRichText(text: string): RichText {
+    if (!text) console.error("text is empty");
     const rt = new RichText({
         text: text
     });
