@@ -1,14 +1,13 @@
 import PostSkeleton from "@/components/post/post-skeleton";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProfileSkeleton() {
     return (
-        <div className="flex h-full flex-col p-4">
+        <div className="flex h-full flex-col w-full">
             <div className="relative">
                 <Skeleton className="h-48 w-full" />
-                <div className="absolute bottom-0 translate-y-2/3 left-4">
-                    <Skeleton className="size-24 rounded-full border-4 border-background" />
+                <div className="absolute bottom-0 translate-y-1/2 left-4">
+                    <Skeleton className="size-24 rounded-full border-[6px] border-background" />
                 </div>
             </div>
             {/* Profile Info Section */}
@@ -25,6 +24,11 @@ export default function ProfileSkeleton() {
                     <Skeleton className="h-4 w-3/4" />
                 </div>
 
+                <div className="flex items-center gap-2">
+                    <Skeleton className="w-4 h-4" /> {/* Calendar Icon */}
+                    <Skeleton className="h-4 w-20" /> {/* Joined Date */}
+                </div>
+
                 {/* Stats */}
                 <div className="flex gap-4 items-center mt-2">
                     <div className="flex items-center gap-1">
@@ -37,7 +41,11 @@ export default function ProfileSkeleton() {
                     </div>
                 </div>
 
-                <Separator className="mt-4" />
+                <div className="flex items-center justify-between w-full bg-foreground/[2%] rounded-md p-2 gap-2">
+                    <Skeleton className="w-1/3 h-7" />
+                    <Skeleton className="w-1/3 h-7" />
+                    <Skeleton className="w-1/3 h-7" />
+                </div>
 
                 <PostSkeleton />
             </div>
