@@ -7,20 +7,15 @@ import PostSkeleton from "@/components/post/post-skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { genRichText, parseRichText, Segment } from "@/utils/text-processor";
-import { getPostAge } from "@/utils/time";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import "@vidstack/react/player/styles/default/theme.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import RichTextRenderer from "../rich-text-renderer";
+import AuthorInfo from "./author-info";
 import { VideoEmbed } from "./embeds/video-embed";
 
 // Types
-interface Author {
-    handle: string;
-    displayName: string;
-    avatar: string;
-}
 
 interface EmbedImage {
     thumb: string;
@@ -34,31 +29,6 @@ interface PostProps {
 }
 
 // Subcomponents
-const AuthorInfo = ({ author, timestamp }: { author: Author; timestamp: string }) => (
-    <div className="flex items-center gap-2">
-        <Link href={`/${author.handle}`}>
-            <p className="text-sm font-semibold hover:underline">{author.displayName}</p>
-        </Link>
-        <Link href={`/${author.handle}`}>
-            <p className="text-sm text-muted-foreground hover:underline">@{author.handle}</p>
-        </Link>
-        <div className="flex gap-2 items-center text-xs text-muted-foreground">
-            <p>·</p>
-            <time>{getPostAge(timestamp)}</time>
-        </div>
-    </div>
-);
-
-const Avatar = ({ author }: { author: Author }) => (
-    <Link href={`/${author.handle}`}>
-        <img
-            src={author.avatar}
-            alt={`${author.handle}'s avatar`}
-            className="h-8 w-8 rounded-full hover:opacity-80 transition-opacity"
-        />
-    </Link>
-);
-
 const MediaGrid = ({ images }: { images: EmbedImage[] }) => (
     <div className={cn("grid gap-2 w-full", images.length > 1 ? "grid-cols-2" : "grid-cols-1")}>
         {images.map((image: EmbedImage, i: number) => (
@@ -143,15 +113,7 @@ const ReplyPost = ({ reply }: { reply: any }) => {
         <div className="relative">
             <CardHeader className="p-3 space-y-0">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <Avatar author={reply.parent.author} />
-                        <div className="flex flex-col gap-0">
-                            <AuthorInfo
-                                author={reply.parent.author}
-                                timestamp={reply.parent.indexedAt}
-                            />
-                        </div>
-                    </div>
+                    <AuthorInfo author={reply.parent.author} timestamp={reply.parent.indexedAt} />
                 </div>
             </CardHeader>
             <CardContent className="pt-0 px-3 pb-3">
@@ -214,14 +176,7 @@ export default function Post({ post, showReply = true }: PostProps) {
             {isReplyPost && <ReplyPost reply={post.reply} />}
 
             <CardHeader className="p-3 space-y-0">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <Avatar author={post.author} />
-                        <div className="flex flex-col gap-0">
-                            <AuthorInfo author={post.author} timestamp={post.indexedAt} />
-                        </div>
-                    </div>
-                </div>
+                <AuthorInfo author={post.author} timestamp={post.indexedAt} />
             </CardHeader>
 
             <CardContent className="pt-0 px-3 pb-3 space-y-2">
