@@ -11,11 +11,11 @@ export default function HomeFooter() {
                 ©{" "}
                 <span className="font-serif italic text-[0.8rem]">{new Date().getFullYear()} </span>
                 <Link
-                    href="https://kyle.so"
+                    href="https://scroll.blue"
                     target="_blank"
                     className="hover:text-foreground transition-colors duration-150 hover:underline"
                 >
-                    Kyle Dickey
+                    scroll.blue
                 </Link>
             </p>
             <div className="flex flex-row items-center gap-4">

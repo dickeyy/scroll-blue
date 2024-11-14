@@ -9,7 +9,7 @@ interface ErrorCardProps {
 
 export default function ErrorCard({ error }: ErrorCardProps) {
     return (
-        <Card className="bg-foreground/[2%] space-y-0 gap-0">
+        <Card className="space-y-0 gap-0 border-red-500 bg-red-500/5">
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <CardTitle>Uh oh, something went wrong</CardTitle>

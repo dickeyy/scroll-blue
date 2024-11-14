@@ -5,7 +5,7 @@ import { LeftSidebar } from "./sidebars/left-sidebar";
 
 export default function WrappedLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const noSidebarRoutes = ["/home", "/sign-in"];
+    const noSidebarRoutes = ["/home", "/sign-in", "/stats"];
     const shouldShowSidebar = !noSidebarRoutes.some((route) => pathname.startsWith(route));
 
     if (!shouldShowSidebar) {
