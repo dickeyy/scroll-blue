@@ -11,7 +11,7 @@ import { EmbedVideo, VideoEmbed } from "./video-embed";
 export default function QuotePost({ post }: { post: any }) {
     const [textSegments, setTextSegments] = useState<Segment[]>([]);
     const [images, setImages] = useState([]);
-    const [video, setVideo] = useState<EmbedVideo | null>(null);
+    const [video, setVideo] = useState<EmbedVideo>();
 
     useEffect(() => {
         async function processText() {
@@ -46,7 +46,14 @@ export default function QuotePost({ post }: { post: any }) {
                     segments={textSegments}
                 />
             )}
-            {images.length > 0 && <MediaGrid images={images} />}
+            {images.length > 0 && (
+                <MediaGrid
+                    media={{
+                        images,
+                        video
+                    }}
+                />
+            )}
             {video && <VideoEmbed video={video} />}
         </div>
     );

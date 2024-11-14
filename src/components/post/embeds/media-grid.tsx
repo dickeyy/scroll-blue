@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { cn } from "@/lib/utils";
+import { EmbedVideo, VideoEmbed } from "./video-embed";
 
 interface EmbedImage {
     thumb: string;
@@ -7,10 +8,20 @@ interface EmbedImage {
     aspectRatio?: number;
 }
 
-export default function MediaGrid({ images }: { images: EmbedImage[] }) {
+interface EmbedAssets {
+    images?: EmbedImage[];
+    video?: EmbedVideo;
+}
+
+export default function MediaGrid({ media }: { media: EmbedAssets }) {
     return (
-        <div className={cn("grid gap-2 w-full", images.length > 1 ? "grid-cols-2" : "grid-cols-1")}>
-            {images.map((image: EmbedImage, i: number) => (
+        <div
+            className={cn(
+                "grid gap-2 w-full",
+                (media.images?.length || 0) > 1 ? "grid-cols-2" : "grid-cols-1"
+            )}
+        >
+            {media.images?.map((image: EmbedImage, i: number) => (
                 <img
                     key={i}
                     src={image.thumb}
@@ -21,6 +32,8 @@ export default function MediaGrid({ images }: { images: EmbedImage[] }) {
                     }}
                 />
             ))}
+
+            {media.video && <VideoEmbed video={media.video} />}
         </div>
     );
 }
