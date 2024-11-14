@@ -7,11 +7,11 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { genRichText, parseRichText, Segment } from "@/utils/text-processor";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import "@vidstack/react/player/styles/default/theme.css";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import RichTextRenderer from "../rich-text-renderer";
 import AuthorInfo from "./author-info";
 import MediaGrid from "./embeds/media-grid";
+import QuotePost from "./embeds/quote-post";
 import { VideoEmbed } from "./embeds/video-embed";
 
 // Types
@@ -22,53 +22,6 @@ interface PostProps {
 }
 
 // Subcomponents
-
-const QuotePost = ({ embed }: { embed: any }) => {
-    const [textSegments, setTextSegments] = useState<Segment[]>([]);
-
-    useEffect(() => {
-        async function processText() {
-            if (embed?.record?.text) {
-                setTextSegments(await parseRichText(genRichText(embed.record.text)));
-            }
-        }
-        processText();
-    }, [embed]);
-
-    if (!embed?.record?.author) {
-        return <div className="text-sm text-muted-foreground">Post not available</div>;
-    }
-
-    return (
-        <div className="border rounded-lg p-3 mt-2">
-            <div className="flex items-center gap-2">
-                <Link href={`/${embed.record.author.handle}`}>
-                    <div className="flex items-center gap-2">
-                        {embed.record.author.avatar && (
-                            <img
-                                src={embed.record.author.avatar}
-                                alt={`${embed.record.author.handle}'s avatar`}
-                                className="h-5 w-5 rounded-full"
-                            />
-                        )}
-                        <span className="text-sm font-semibold hover:underline">
-                            {embed.record.author.displayName}
-                        </span>
-                        <span className="text-sm text-muted-foreground">
-                            @{embed.record.author.handle}
-                        </span>
-                    </div>
-                </Link>
-            </div>
-            {embed.record.value?.text && (
-                <RichTextRenderer
-                    className="mt-2 text-sm whitespace-pre-wrap"
-                    segments={textSegments}
-                />
-            )}
-        </div>
-    );
-};
 
 const ReplyPost = ({ reply }: { reply: any }) => {
     const [textSegments, setTextSegments] = useState<Segment[]>([]);
@@ -163,7 +116,7 @@ export default function Post({ post, showReply = true }: PostProps) {
 
                 {hasImages && <MediaGrid images={post.embed.images} />}
                 {hasVideo && <VideoEmbed video={post.embed} />}
-                {isQuotePost && <QuotePost embed={post.embed} />}
+                {isQuotePost && <QuotePost post={post.embed} />}
             </CardContent>
 
             <PostActions

@@ -4,7 +4,7 @@ import "@vidstack/react/player/styles/default/layouts/video.css";
 import "@vidstack/react/player/styles/default/theme.css";
 import { memo } from "react";
 
-interface EmbedVideo {
+export interface EmbedVideo {
     $type: string;
     aspectRatio: {
         height: number;
