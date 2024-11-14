@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CalendarDays } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import RichTextRenderer from "../rich-text-renderer";
@@ -153,16 +154,20 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
 
                 {/* Stats */}
                 <div className="flex gap-4 text-sm">
-                    <button className="hover:underline">
+                    <Link className="hover:underline" href={`/${profile.handle}/followers`}>
                         <span className="font-bold">
                             {formatNumber(profile.followersCount || 0)}
                         </span>{" "}
                         <span className="text-muted-foreground">followers</span>
-                    </button>
-                    <button className="hover:underline">
+                    </Link>
+                    <Link className="hover:underline" href={`/${profile.handle}/following`}>
                         <span className="font-bold">{formatNumber(profile.followsCount || 0)}</span>{" "}
                         <span className="text-muted-foreground">following</span>
-                    </button>
+                    </Link>
+                    <div>
+                        <span className="font-bold">{formatNumber(profile.postsCount || 0)}</span>{" "}
+                        <span className="text-muted-foreground">posts</span>
+                    </div>
                 </div>
             </div>
         </div>

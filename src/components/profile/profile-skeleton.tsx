@@ -39,6 +39,10 @@ export default function ProfileSkeleton() {
                         <Skeleton className="h-4 w-12" /> {/* Number */}
                         <Skeleton className="h-4 w-16" /> {/* "Followers" */}
                     </div>
+                    <div className="flex items-center gap-1">
+                        <Skeleton className="h-4 w-12" /> {/* Number */}
+                        <Skeleton className="h-4 w-16" /> {/* "Posts" */}
+                    </div>
                 </div>
 
                 <div className="flex items-center justify-between w-full bg-foreground/[2%] rounded-md p-2 gap-2">
