@@ -40,7 +40,9 @@ export function AuthorAvatar({ author }: { author: Author }) {
     return (
         <Avatar className="w-8 h-8">
             <AvatarFallback className="text-sm">
-                {(author.displayName[0] + author.displayName[1]).toUpperCase()}
+                {author.displayName
+                    ? (author.displayName[0] + author.displayName[1]).toUpperCase()
+                    : "SB"}
             </AvatarFallback>
             <AvatarImage src={author.avatar} />
         </Avatar>
