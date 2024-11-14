@@ -13,7 +13,9 @@ import { EmbedVideo } from "./video-embed";
 export default function ReplyPost({ reply }: { reply: any }) {
     const [textSegments, setTextSegments] = useState<Segment[]>([]);
     const [images, setImages] = useState([]);
-    const [videos, setVideo] = useState<EmbedVideo[] | null>(null);
+    const [video, setVideo] = useState<EmbedVideo>();
+
+    const mediaCount = images.length + (video ? 1 : 0);
 
     useEffect(() => {
         async function processText() {
@@ -21,8 +23,19 @@ export default function ReplyPost({ reply }: { reply: any }) {
                 setTextSegments(await parseRichText(genRichText(reply.parent.record.text)));
             }
         }
+
+        if (reply.parent.embed) {
+            const type = reply.parent.embed.$type;
+            if (type === "app.bsky.embed.images#view") {
+                setImages(reply.parent.embed.images);
+            }
+            if (type === "app.bsky.embed.video#view") {
+                setVideo(reply.parent.embed);
+            }
+        }
+
         processText();
-    }, [reply.parent.record]);
+    }, [reply.parent]);
 
     return (
         <div className="relative">
@@ -34,12 +47,11 @@ export default function ReplyPost({ reply }: { reply: any }) {
                     className="text-start text-sm text-foreground whitespace-pre-wrap"
                     segments={textSegments}
                 />
-                {reply.parent.embed?.images?.length > 0 && (
+                {mediaCount > 0 && (
                     <MediaGrid
                         media={{
-                            images: images || undefined,
-                            videos: videos || undefined,
-                            size: images?.length + (videos ? videos?.length : 0) || 0
+                            images,
+                            video
                         }}
                     />
                 )}
