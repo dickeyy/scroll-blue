@@ -69,20 +69,11 @@ export function PostsFeed({ actor, includeLikes, includeReplies, includeMedia }:
         );
     }
 
-    // Add content key based on the feed type to force re-render when switching tabs
-    const feedType = includeMedia
-        ? "media"
-        : includeReplies
-          ? "replies"
-          : includeLikes
-            ? "likes"
-            : "posts";
-
     return (
-        <div key={`${actor}-${feedType}-${data.pages.length}`} className="flex flex-col gap-4">
-            {data.pages.map((page: any) => (
-                <div key={page.cursor} className="flex flex-col gap-4">
-                    {page.posts.map((feedViewPost: AppBskyFeedDefs.FeedViewPost) => {
+        <div className="flex flex-col gap-4">
+            {data.pages.map((page: any, index: number) => (
+                <div key={index} className="flex flex-col gap-4">
+                    {page.posts.map((feedViewPost: AppBskyFeedDefs.FeedViewPost, index: number) => {
                         // When in media mode, we don't need additional filtering as the API already handles it
                         if (includeMedia) {
                             return <Post key={feedViewPost.post.uri} post={feedViewPost.post} />;
@@ -105,7 +96,9 @@ export function PostsFeed({ actor, includeLikes, includeReplies, includeMedia }:
                             reason: feedViewPost.reason
                         };
 
-                        return <Post key={feedViewPost.post.uri} post={enrichedPost} />;
+                        return (
+                            <Post key={feedViewPost.post.uri + "-" + index} post={enrichedPost} />
+                        );
                     })}
                 </div>
             ))}
