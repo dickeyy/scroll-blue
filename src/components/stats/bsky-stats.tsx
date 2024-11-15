@@ -11,7 +11,7 @@ const CONFIG = {
     POLL_INTERVAL: 60000,
     ERROR_RETRY: 5000,
     JITTER: Math.random() * 10,
-    API_ENDPOINT: "https://sb-stats.c.kyle.so/"
+    API_ENDPOINT: "https://bsky-stats.scroll.blue"
 } as const;
 
 // Type definitions
