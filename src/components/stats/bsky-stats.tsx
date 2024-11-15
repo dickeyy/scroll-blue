@@ -173,18 +173,6 @@ export default function BskyStats() {
             {creditsVisible && (
                 <div className="flex w-full flex-col items-center justify-center text-center mt-8 absolute bottom-[20%] space-y-1">
                     <p className="text-muted-foreground/60 text-xs">
-                        API & number component from{" "}
-                        <Link
-                            href="https://bsky.app/profile/natalie.sh"
-                            className="hover:underline text-blue-500"
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            @natalie.sh
-                        </Link>
-                        .
-                    </p>
-                    <p className="text-muted-foreground/60 text-xs">
                         Data sourced from{" "}
                         <Link
                             href="https://bsky.app/profile/jaz.bsky.social"
@@ -202,6 +190,18 @@ export default function BskyStats() {
                             rel="noreferrer"
                         >
                             bsky stats
+                        </Link>
+                        .
+                    </p>
+                    <p className="text-muted-foreground/60 text-xs">
+                        Number component from{" "}
+                        <Link
+                            href="https://bsky.app/profile/natalie.sh"
+                            className="hover:underline text-blue-500"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            @natalie.sh
                         </Link>
                         .
                     </p>
