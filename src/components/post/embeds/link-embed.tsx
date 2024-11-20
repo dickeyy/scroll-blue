@@ -27,18 +27,20 @@ export default function LinkEmbed({ embed }: { embed: LinkEmbedType }) {
                         <img
                             src={embed.thumb}
                             alt={embed.title}
-                            className="rounded-md border aspect-auto rounded-b-none"
+                            className="rounded-md border aspect-auto rounded-b-none w-full"
                         />
                     )}
                 </CardContent>
                 <CardHeader className="p-2">
-                    <CardTitle>{embed.title}</CardTitle>
-                    <CardDescription>{embed.description}</CardDescription>
+                    <CardTitle className="truncate w-full">{embed.title || embed.uri}</CardTitle>
+                    <CardDescription className="truncate w-full">
+                        {embed.description}
+                    </CardDescription>
                 </CardHeader>
                 <Separator />
                 <CardFooter className="p-2 text-xs text-muted-foreground gap-2">
                     <GlobeIcon className="size-3" />
-                    <p>{embed.uri}</p>
+                    <p className="truncate">{embed.uri}</p>
                 </CardFooter>
             </Card>
         </Link>
