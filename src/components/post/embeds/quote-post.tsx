@@ -15,7 +15,7 @@ export default function QuotePost({ post }: { post: any }) {
 
     useEffect(() => {
         async function processText() {
-            if (post?.record?.value.text) {
+            if (post?.record?.value?.text) {
                 setTextSegments(await parseRichText(genRichText(post.record.value.text)));
             }
         }

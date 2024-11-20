@@ -75,7 +75,7 @@ export default function Post({ post, showReply = true }: PostProps) {
             {isReplyPost && <ReplyPost reply={post.reply} />}
 
             <CardHeader className="p-3 space-y-0">
-                <AuthorInfo author={post.author} timestamp={post.indexedAt} />
+                {post.author && <AuthorInfo author={post.author} timestamp={post.indexedAt} />}
             </CardHeader>
 
             <CardContent className="pt-0 px-3 pb-3 space-y-2">
