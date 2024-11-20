@@ -9,12 +9,16 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import AccountDropdown from "../account-dropdown";
+import CreatePostModal from "../modals/create-post";
 
 export function LeftSidebar() {
     const pathname = usePathname();
     const { data: session } = useSession();
     const profile = session?.user?.profile;
+
+    const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
 
     const navigationItems = [
         {
@@ -89,7 +93,10 @@ export function LeftSidebar() {
                 </nav>
 
                 {/* Post Button */}
-                <Button className="mt-4 gap-2 md:w-full">
+                <Button
+                    className="mt-4 gap-2 md:w-full"
+                    onClick={() => setIsCreatePostModalOpen(true)}
+                >
                     <PenSquare className="h-6 w-6 md:hidden" />
                     <span className="hidden md:inline">Post</span>
                 </Button>
@@ -99,6 +106,11 @@ export function LeftSidebar() {
             <div className="flex flex-col gap-2">
                 {profile && <AccountDropdown profile={profile} />}
             </div>
+
+            <CreatePostModal
+                isOpen={isCreatePostModalOpen}
+                onClose={() => setIsCreatePostModalOpen(false)}
+            />
         </div>
     );
 }
