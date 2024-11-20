@@ -18,7 +18,7 @@ export interface EmbedVideo {
 
 export const VideoEmbed = memo(function VideoEmbed({ video }: { video: EmbedVideo }) {
     return (
-        <div className="aspect-video mt-2 rounded-md hover:brightness-90 hover:cursor-pointer overflow-hidden">
+        <div className="aspect-video mt-2 rounded-md hover:brightness-90 hover:cursor-pointer overflow-hidden border border-border">
             <MediaPlayer
                 crossOrigin
                 playsInline

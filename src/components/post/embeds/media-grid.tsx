@@ -104,7 +104,7 @@ export default function MediaGrid({ media }: { media: EmbedAssets }) {
                         <img
                             src={image.thumb}
                             alt={image.alt}
-                            className="rounded-lg w-full h-full object-cover"
+                            className="rounded-lg w-full h-full object-cover border border-border"
                             style={{
                                 aspectRatio: image.aspectRatio?.toString() ?? "1"
                             }}
