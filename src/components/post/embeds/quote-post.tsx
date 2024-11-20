@@ -5,6 +5,7 @@ import RichTextRenderer from "@/components/rich-text-renderer";
 import { genRichText, parseRichText, Segment } from "@/utils/text-processor";
 import { useEffect, useState } from "react";
 import AuthorInfo from "../author-info";
+import LinkEmbed, { LinkEmbedType } from "./link-embed";
 import MediaGrid from "./media-grid";
 import { EmbedVideo, VideoEmbed } from "./video-embed";
 
@@ -12,6 +13,7 @@ export default function QuotePost({ post }: { post: any }) {
     const [textSegments, setTextSegments] = useState<Segment[]>([]);
     const [images, setImages] = useState([]);
     const [video, setVideo] = useState<EmbedVideo>();
+    const [link, setLink] = useState<LinkEmbedType>();
 
     useEffect(() => {
         async function processText() {
@@ -26,6 +28,8 @@ export default function QuotePost({ post }: { post: any }) {
                     setImages(embed.images);
                 } else if (embed.$type === "app.bsky.embed.video#view") {
                     setVideo(embed);
+                } else if (embed.$type === "app.bsky.embed.external#view") {
+                    setLink(embed.external);
                 }
             });
         }
@@ -55,6 +59,7 @@ export default function QuotePost({ post }: { post: any }) {
                 />
             )}
             {video && <VideoEmbed video={video} />}
+            {link && <LinkEmbed embed={link} />}
         </div>
     );
 }

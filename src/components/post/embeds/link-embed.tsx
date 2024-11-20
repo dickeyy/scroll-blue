@@ -20,7 +20,7 @@ export interface LinkEmbedType {
 
 export default function LinkEmbed({ embed }: { embed: LinkEmbedType }) {
     return (
-        <Link href={embed.uri} target="_blank" rel="noreferrer">
+        <Link href={embed.uri || "#"} target="_blank" rel="noreferrer">
             <Card className="p-0 hover:bg-card/40 transition-all bg-background">
                 <CardContent className="p-0 bg-transparent">
                     {embed.thumb && (
