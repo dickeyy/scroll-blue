@@ -10,6 +10,7 @@ import "@vidstack/react/player/styles/default/theme.css";
 import { useEffect, useState } from "react";
 import RichTextRenderer from "../rich-text-renderer";
 import AuthorInfo from "./author-info";
+import LinkEmbed, { LinkEmbedType } from "./embeds/link-embed";
 import MediaGrid from "./embeds/media-grid";
 import QuotePost from "./embeds/quote-post";
 import ReplyPost from "./embeds/reply-post";
@@ -27,6 +28,7 @@ export default function Post({ post, showReply = true }: PostProps) {
     const [textSegments, setTextSegments] = useState<Segment[]>([]);
     const [images, setImages] = useState([]);
     const [video, setVideo] = useState<EmbedVideo>();
+    const [linkEmbed, setLinkEmbed] = useState<LinkEmbedType>();
 
     const mediaCount = images.length + (video ? 1 : 0);
 
@@ -48,6 +50,9 @@ export default function Post({ post, showReply = true }: PostProps) {
             }
             if (type === "app.bsky.embed.video#view") {
                 setVideo(post.embed);
+            }
+            if (type === "app.bsky.embed.external#view") {
+                setLinkEmbed(post.embed.external);
             }
         }
 
@@ -75,7 +80,7 @@ export default function Post({ post, showReply = true }: PostProps) {
 
             <CardContent className="pt-0 px-3 pb-3 space-y-2">
                 <RichTextRenderer
-                    className="text-start text-sm text-foreground whitespace-pre-wrap"
+                    className="text-start text-sm text-foreground whitespace-pre-wrap mb-2"
                     segments={textSegments}
                 />
 
@@ -87,6 +92,7 @@ export default function Post({ post, showReply = true }: PostProps) {
                         }}
                     />
                 )}
+                {linkEmbed && <LinkEmbed embed={linkEmbed} />}
                 {isQuotePost && <QuotePost post={post.embed} />}
             </CardContent>
 
