@@ -48,7 +48,7 @@ export default async function RootLayout({
                     <script
                         defer
                         data-domain="scroll.blue"
-                        src="https://analytics.kyle.so/js/script.js"
+                        src="https://a.kyle.so/js/script.js"
                     ></script>
                 </head>
                 <body
